@@ -1,0 +1,88 @@
+[gd_scene load_steps=10 format=3 uid="uid://nd3b20iqlwk0"]
+
+[ext_resource type="Script" uid="uid://chlx2hfeygrj" path="res://assetsNEW/scenes/HUD/thought_displayer.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bst7kbotp1kvp" path="res://assetsNEW/graphics/HUD/thoughts/Static/static.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://ds2qrousbctxj" path="res://assetsNEW/graphics/HUD/catthoughtidisplayer9000.png" id="3"]
+[ext_resource type="FontFile" uid="uid://dx0v2df80imuv" path="res://assetsNEW/fonts/Arial Rounded MT Bold Regular.ttf" id="4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a5cc5"]
+atlas = ExtResource("2")
+region = Rect2(0, 0, 109, 89)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jp3cp"]
+atlas = ExtResource("2")
+region = Rect2(109, 0, 109, 89)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iqbbt"]
+atlas = ExtResource("2")
+region = Rect2(218, 0, 109, 89)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iroau"]
+atlas = ExtResource("2")
+region = Rect2(327, 0, 109, 89)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wesb0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a5cc5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jp3cp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iqbbt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iroau")
+}],
+"loop": true,
+"name": &"default",
+"speed": 30.0
+}]
+
+[node name="ThoughtDisplayer" type="Node2D" node_paths=PackedStringArray("thought_sprite", "tv_static")]
+script = ExtResource("1")
+textures_path = "res://assetsNEW/graphics/HUD/thoughts"
+thought_categories = Array[String](["res://assetsNEW/graphics/HUD/thoughts/Idle.csv", "res://assetsNEW/graphics/HUD/thoughts/Money.csv", "res://assetsNEW/graphics/HUD/thoughts/Death.csv", "res://assetsNEW/graphics/HUD/thoughts/Moving.csv", "res://assetsNEW/graphics/HUD/thoughts/Win.csv", "res://assetsNEW/graphics/HUD/thoughts/Car.csv", "res://assetsNEW/graphics/HUD/thoughts/Chuckle.csv", "res://assetsNEW/graphics/HUD/thoughts/Skull.csv", "res://assetsNEW/graphics/HUD/thoughts/Dog.csv", "res://assetsNEW/graphics/HUD/thoughts/Horse.csv", "res://assetsNEW/graphics/HUD/thoughts/Metronome.csv", "res://assetsNEW/graphics/HUD/thoughts/Police.csv", "res://assetsNEW/graphics/HUD/thoughts/Portal.csv", "res://assetsNEW/graphics/HUD/thoughts/Sand.csv", "res://assetsNEW/graphics/HUD/thoughts/Jump.csv", "res://assetsNEW/graphics/HUD/thoughts/Backrooms.csv", "res://assetsNEW/graphics/HUD/thoughts/Lights.csv", "res://assetsNEW/graphics/HUD/thoughts/Sleep.csv", "res://assetsNEW/graphics/HUD/thoughts/Swim.csv", "res://assetsNEW/graphics/HUD/thoughts/Terry.csv"])
+thought_sprite = NodePath("Thought")
+tv_static = NodePath("Static")
+tv_static_time = 0.2
+autoplay_fallback = true
+fallback_category = "Idle"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(109, 89)
+offset_left = 41.0001
+offset_top = 351.0
+offset_right = 150.0
+offset_bottom = 440.0
+color = Color(0.0911214, 0.0911215, 0.0911214, 1)
+
+[node name="Thought" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(95.0001, 395)
+scale = Vector2(1.01, 1.01)
+
+[node name="Static" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(95.0001, 395)
+scale = Vector2(1.01, 1.01)
+sprite_frames = SubResource("SpriteFrames_wesb0")
+autoplay = "default"
+
+[node name="ThoughtBubble" type="Sprite2D" parent="."]
+position = Vector2(96.0001, 424)
+scale = Vector2(0.148607, 0.148607)
+texture = ExtResource("3")
+
+[node name="debug" type="Label" parent="."]
+offset_left = 40.0001
+offset_top = 351.0
+offset_right = 150.0
+offset_bottom = 440.0
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("4")
+theme_override_font_sizes/font_size = 10
+text = "Debug"
+autowrap_mode = 3

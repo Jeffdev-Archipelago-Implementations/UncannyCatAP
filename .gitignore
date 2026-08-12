@@ -1,0 +1,37 @@
+# Godot 4+ specific ignores
+.godot/
+.nomedia
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_credentials.cfg
+*.tmp
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
+.mono/
+data_*/
+mono_crash.*.json
+
+# Base game asset files
+assetsNEW/**
+!assetsNEW/**/
+ucg_tv_test/**
+
+# Base-game files this mod edits that need to be kept track of:
+!assetsNEW/graphics/minigames/bartbash/borttheme.tres
+!assetsNEW/scenes/HUD/thought_displayer.tscn
+!assetsNEW/scenes/game/levels/level.gd
+!assetsNEW/scenes/game/menus/pregame/game_loader.gd
+!assetsNEW/scenes/game/menus/pthru/level_select.gd
+!assetsNEW/scenes/game/menus/title_screen.tscn
+!assetsNEW/scenes/game/minigames/bartbash/scenes/bort_game.gd
+!assetsNEW/scenes/game/minigames/meowl/scenes/meowl_level.gd
+!assetsNEW/scenes/game/minigames/uncanny_dash/game.gd
+!assetsNEW/scenes/mod_loader.gd
+!assetsNEW/scenes/objects/player/player.gd
+!assetsNEW/scenes/utils/pthru_data.gd
+!assetsNEW/scenes/utils/save_data.gd

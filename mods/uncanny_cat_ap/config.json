@@ -1,0 +1,36 @@
+{
+	"deathlink": {
+		"default": 0,
+		"name": "DeathLink",
+		"description": "Enables DeathLink. When jumpscared, send a death to your friends. When receiving a death, you get jumpscared.",
+		"type_hint": {
+			"id": "option_picker",
+			"options": [
+				"Use Yaml Setting",
+				"Force Enable",
+				"Force Disable"
+			]
+		}
+	},
+	"deathlink_amnesty": {
+		"name": "DeathLink Amnesty",
+		"description": "Sets how many deaths count as a death for DeathLink purposes.",
+		"default": 5,
+		"type_hint": {
+			"id": "spin_box",
+			"min": 1,
+			"max": 10,
+			"step": 1,
+		}
+	},
+	"show_ap_msgs": {
+		"name": "Display Archipelago Messages",
+		"description": "Display Archipelago messages at the top of the screen.",
+		"default": true
+	},
+	"ap_msg_queue_time": {
+		"name": "Message Display Time",
+		"description": "Adjust how long you want Archipelago messages at the top to display for, in seconds.",
+		"default": 3
+	}
+}
