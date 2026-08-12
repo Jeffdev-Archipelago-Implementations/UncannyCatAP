@@ -1,0 +1,38 @@
+[gd_scene load_steps=9 format=3 uid="uid://v6axaxiver87"]
+
+[ext_resource type="Script" uid="uid://bonomvtrr8biu" path="res://assetsNEW/scenes/game/minigames/meowl/meowl_game.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://dcw4xy2v6m8t3" path="res://assetsNEW/scenes/game/minigames/meowl/scenes/meowl_intro.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bqj0bf56ac3ic" path="res://assetsNEW/scenes/game/minigames/meowl/scenes/meowl_level.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://d2bvw1lupq8x2" path="res://assetsNEW/scenes/game/minigames/meowl/scenes/meowl_death.tscn" id="4"]
+[ext_resource type="Texture2D" uid="uid://dk0ur3v5r33w8" path="res://assetsNEW/graphics/minigames/meowl/meowl_og.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://c1vo1fv6oqdn" path="res://assetsNEW/graphics/HUD/logo_small/logo_small_en.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://b7fmk1jedr0bd" path="res://assetsNEW/graphics/minigames/meowl/meowls_logo.png" id="7"]
+[ext_resource type="Texture2D" uid="uid://di4jkvt166n5s" path="res://assetsNEW/graphics/HUD/hud_border.png" id="8"]
+
+[node name="MeowlGame" type="Node2D"]
+script = ExtResource("1")
+packed_minigame_scenes = Array[PackedScene]([ExtResource("2"), ExtResource("3"), ExtResource("4")])
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="BG" type="Sprite2D" parent="HUD"]
+modulate = Color(0.32, 0.1856, 0.1856, 1)
+position = Vector2(124, 276)
+scale = Vector2(-0.721, 1.286)
+texture = ExtResource("5")
+
+[node name="SmallLogo" type="Sprite2D" parent="HUD"]
+position = Vector2(124, 20)
+scale = Vector2(0.515593, 0.481928)
+texture = ExtResource("6")
+
+[node name="SmallLogo2" type="Sprite2D" parent="HUD"]
+position = Vector2(124, 88)
+scale = Vector2(0.772586, 0.703297)
+texture = ExtResource("7")
+
+[node name="Bar" type="Sprite2D" parent="HUD"]
+position = Vector2(252, 256)
+scale = Vector2(0.999999, 64)
+texture = ExtResource("8")

@@ -16,22 +16,75 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 
-# Base game asset files
+# --- Decompiled base game ---
 assetsNEW/**
 !assetsNEW/**/
 ucg_tv_test/**
 
-# Base-game files this mod edits that need to be kept track of:
+# Base-game files this mod edits (keep tracked):
 !assetsNEW/graphics/minigames/bartbash/borttheme.tres
 !assetsNEW/scenes/HUD/thought_displayer.tscn
+!assetsNEW/scenes/game/levels/endless/E_00.tscn
+!assetsNEW/scenes/game/levels/endless/E_01.tscn
+!assetsNEW/scenes/game/levels/endless/E_03.tscn
+!assetsNEW/scenes/game/levels/endless/E_04.tscn
+!assetsNEW/scenes/game/levels/endless/E_05.tscn
+!assetsNEW/scenes/game/levels/endless/E_06.tscn
+!assetsNEW/scenes/game/levels/endless/E_07.tscn
+!assetsNEW/scenes/game/levels/endless/E_08.tscn
+!assetsNEW/scenes/game/levels/endless/E_09.tscn
 !assetsNEW/scenes/game/levels/level.gd
+!assetsNEW/scenes/game/levels/regular/w0/0_01.tscn
+!assetsNEW/scenes/game/levels/regular/w0/0_04.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_01.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_03.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_05.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_06.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_08.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_10.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_11.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_12.tscn
+!assetsNEW/scenes/game/levels/regular/w1/1_13.tscn
+!assetsNEW/scenes/game/levels/regular/w2/2_02.tscn
+!assetsNEW/scenes/game/levels/regular/w2/2_05.tscn
+!assetsNEW/scenes/game/levels/regular/w2/2_08.tscn
+!assetsNEW/scenes/game/levels/regular/w2/2_10.tscn
+!assetsNEW/scenes/game/levels/regular/w3/3_03.tscn
+!assetsNEW/scenes/game/levels/regular/w3/3_04.tscn
+!assetsNEW/scenes/game/levels/regular/w3/3_08.tscn
+!assetsNEW/scenes/game/levels/regular/w3/3_09.tscn
+!assetsNEW/scenes/game/levels/regular/w3/3_11.tscn
+!assetsNEW/scenes/game/levels/regular/w3/3_12.tscn
+!assetsNEW/scenes/game/levels/regular/w4/4_06.tscn
+!assetsNEW/scenes/game/levels/regular/w5/5_05.tscn
+!assetsNEW/scenes/game/levels/regular/w5/5_18.tscn
+!assetsNEW/scenes/game/levels/regular/w6/P_01.tscn
+!assetsNEW/scenes/game/levels/regular/w6/P_04.tscn
+!assetsNEW/scenes/game/levels/regular/w6/P_05.tscn
+!assetsNEW/scenes/game/levels/regular/w6/P_06.tscn
+!assetsNEW/scenes/game/levels/regular/w6/P_14.tscn
+!assetsNEW/scenes/game/menus/extras/mods_menu.tscn
+!assetsNEW/scenes/game/menus/game/pthru.tscn
 !assetsNEW/scenes/game/menus/pregame/game_loader.gd
 !assetsNEW/scenes/game/menus/pthru/level_select.gd
+!assetsNEW/scenes/game/menus/pthru/level_select.tscn
 !assetsNEW/scenes/game/menus/title_screen.tscn
+!assetsNEW/scenes/game/minigames/bartbash/bort_bash.tscn
 !assetsNEW/scenes/game/minigames/bartbash/scenes/bort_game.gd
+!assetsNEW/scenes/game/minigames/bartbash/scenes/bort_game.tscn
+!assetsNEW/scenes/game/minigames/bingball/bingball_game.tscn
+!assetsNEW/scenes/game/minigames/meowl/meowl_game.tscn
+!assetsNEW/scenes/game/minigames/meowl/scenes/meowl_intro.tscn
 !assetsNEW/scenes/game/minigames/meowl/scenes/meowl_level.gd
+!assetsNEW/scenes/game/minigames/uncanny_dash/bnw.tres
 !assetsNEW/scenes/game/minigames/uncanny_dash/game.gd
+!assetsNEW/scenes/game/minigames/uncanny_dash/numbers.tres
+!assetsNEW/scenes/game/minigames/uncanny_dash/uncanny_dash.tscn
 !assetsNEW/scenes/mod_loader.gd
+!assetsNEW/scenes/objects/gimmicks/jump_pad.tscn
+!assetsNEW/scenes/objects/gimmicks/water_death.tscn
 !assetsNEW/scenes/objects/player/player.gd
+!assetsNEW/scenes/tiles/default_tiles.tres
+!assetsNEW/scenes/tiles/horse_tiles.tres
 !assetsNEW/scenes/utils/pthru_data.gd
 !assetsNEW/scenes/utils/save_data.gd

@@ -1,0 +1,217 @@
+[gd_scene load_steps=15 format=3 uid="uid://dxrcbmk54uutm"]
+
+[ext_resource type="Script" uid="uid://d3mdc78uiijeh" path="res://assetsNEW/scenes/game/minigames/bartbash/scenes/bort_game.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://rpwc7an0rysx" path="res://assetsNEW/graphics/minigames/meowl/meowlBG2.png" id="2"]
+[ext_resource type="Theme" uid="uid://co4dbd8lpinaf" path="res://assetsNEW/graphics/minigames/bartbash/borttheme.tres" id="3"]
+[ext_resource type="FontFile" uid="uid://bb152qtgi78wm" path="res://assetsNEW/fonts/times new roman.ttf" id="4"]
+[ext_resource type="AudioStream" uid="uid://nswwgmjgo8vl" path="res://assetsNEW/sounds/minigame/bart_congrats.ogg" id="5"]
+[ext_resource type="AudioStream" uid="uid://gjh4hb7kdra1" path="res://assetsNEW/sounds/gimmicks/slots_bad.ogg" id="6"]
+[ext_resource type="AudioStream" uid="uid://caxlg0g5fmdpa" path="res://assetsNEW/music/minigames/musBort.ogg" id="7"]
+[ext_resource type="Texture2D" uid="uid://6ohvaljcj3mb" path="res://assetsNEW/graphics/menu/results/ontotexture.png" id="8"]
+[ext_resource type="FontFile" uid="uid://cep5kfn2ih83v" path="res://assetsNEW/fonts/impact.ttf" id="9"]
+[ext_resource type="FontFile" uid="uid://cq4etdoskb1pk" path="res://assetsNEW/fonts/COMIC.TTF" id="10"]
+[ext_resource type="FontFile" uid="uid://c27pecmqdqiop" path="res://assetsNEW/fonts/Thunderman.ttf" id="11"]
+[ext_resource type="Texture2D" uid="uid://dour76dqflcvs" path="res://assetsNEW/graphics/minigames/bartbash/bortranks.png" id="12"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mwj1u"]
+size = Vector2(32, 576)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gin1y"]
+size = Vector2(512, 32)
+
+[node name="BortGame" type="Node2D"]
+script = ExtResource("1")
+
+[node name="bg" type="Sprite2D" parent="."]
+position = Vector2(512, 288)
+scale = Vector2(1, 0.875)
+texture = ExtResource("2")
+
+[node name="BortCage" type="StaticBody2D" parent="."]
+collision_layer = 512
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BortCage"]
+position = Vector2(240, 256)
+shape = SubResource("RectangleShape2D_mwj1u")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="BortCage"]
+position = Vector2(784, 256)
+shape = SubResource("RectangleShape2D_mwj1u")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="BortCage"]
+position = Vector2(512, 48)
+shape = SubResource("RectangleShape2D_gin1y")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="BortCage"]
+position = Vector2(512, 528)
+shape = SubResource("RectangleShape2D_gin1y")
+
+[node name="clickallbarts" type="Node2D" parent="."]
+position = Vector2(512, 288)
+
+[node name="Panel" type="Panel" parent="clickallbarts"]
+offset_left = -160.0
+offset_top = -80.0
+offset_right = 160.0
+offset_bottom = 80.0
+theme = ExtResource("3")
+
+[node name="Label" type="Label" parent="clickallbarts"]
+offset_left = -192.0
+offset_top = -80.0
+offset_right = 192.0
+offset_bottom = 16.0
+theme_override_fonts/font = ExtResource("4")
+text = "MINIGAME_Bart_Prompt"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartButton" type="Button" parent="clickallbarts"]
+offset_left = -64.0
+offset_top = 24.0
+offset_right = 64.0
+offset_bottom = 64.0
+theme = ExtResource("3")
+theme_override_font_sizes/font_size = 20
+text = "OK"
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="congrats" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5")
+bus = &"Sound"
+
+[node name="lose" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6")
+bus = &"Sound"
+
+[node name="music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7")
+bus = &"Music"
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="overlay" type="Sprite2D" parent="HUD"]
+position = Vector2(512, 32)
+texture = ExtResource("8")
+vframes = 8
+
+[node name="Timer" type="Label" parent="HUD"]
+offset_left = 256.0
+offset_right = 768.0
+offset_bottom = 64.0
+theme_override_colors/font_shadow_color = Color(0, 0, 1, 1)
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("9")
+theme_override_font_sizes/font_size = 40
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Round" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 128.0
+offset_right = 208.0
+offset_bottom = 192.0
+theme_override_colors/font_color = Color(1, 0.5, 0.625, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("10")
+theme_override_font_sizes/font_size = 20
+text = "ROUND 0"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="BartsLeft" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 192.0
+offset_right = 208.0
+offset_bottom = 256.0
+theme_override_colors/font_color = Color(1, 1, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("10")
+theme_override_font_sizes/font_size = 20
+text = "Borts Left: 0"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Score" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 256.0
+offset_right = 208.0
+offset_bottom = 320.0
+theme_override_colors/font_color = Color(0.4, 0.83, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("10")
+theme_override_font_sizes/font_size = 20
+text = "Score: 0"
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="GameOver" type="Node2D" parent="."]
+visible = false
+
+[node name="Polygon2D" type="Polygon2D" parent="GameOver"]
+position = Vector2(512, 288)
+color = Color(0, 0, 0, 0.72549)
+polygon = PackedVector2Array(-192, 160, 192, 160, 192, -160, -192, -160)
+
+[node name="Label" type="Label" parent="GameOver"]
+offset_left = 320.0
+offset_top = 128.0
+offset_right = 704.0
+offset_bottom = 192.0
+theme_override_fonts/font = ExtResource("11")
+theme_override_font_sizes/font_size = 25
+text = "MINIGAME_Bart_Gover"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="GameOver"]
+offset_left = 504.0
+offset_top = 192.0
+offset_right = 696.0
+offset_bottom = 224.0
+theme_override_fonts/font = ExtResource("11")
+text = "MINIGAME_Bart_Status"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="GameOver"]
+position = Vector2(600, 320)
+texture = ExtResource("12")
+hframes = 7
+
+[node name="Label4" type="Label" parent="GameOver"]
+offset_left = 344.0
+offset_top = 200.0
+offset_right = 504.0
+offset_bottom = 368.0
+theme_override_fonts/font = ExtResource("4")
+text = "MINIGAME_Bart_Retry"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="ExitButton" type="Button" parent="GameOver"]
+offset_left = 360.0
+offset_top = 384.0
+offset_right = 488.0
+offset_bottom = 440.0
+theme_override_font_sizes/font_size = 20
+text = "OK"
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 30.0
+one_shot = true
+
+[connection signal="pressed" from="clickallbarts/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="GameOver/ExitButton" to="." method="_on_exit_button_pressed"]

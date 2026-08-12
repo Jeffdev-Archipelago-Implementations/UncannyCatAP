@@ -1,0 +1,947 @@
+[gd_scene load_steps=97 format=4 uid="uid://c16lsht18njgy"]
+
+[ext_resource type="Script" uid="uid://cuelgros0yw5s" path="res://assetsNEW/scenes/game/levels/level.gd" id="1"]
+[ext_resource type="Shader" uid="uid://p1omcmforcdn" path="res://assetsNEW/graphics/shaders/endless_grid_bg.gdshader" id="2"]
+[ext_resource type="Shader" uid="uid://bhchlyllwyoqa" path="res://assetsNEW/graphics/shaders/colorswapShiny.gdshader" id="3"]
+[ext_resource type="TileSet" uid="uid://dosw4yluxwxbp" path="res://assetsNEW/scenes/tiles/default_tiles.tres" id="4"]
+[ext_resource type="PackedScene" uid="uid://bbp84ahibwsn3" path="res://assetsNEW/scenes/objects/important/goal.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://bdnhpxy3ifxk" path="res://assetsNEW/scenes/objects/blocks/key_door.tscn" id="6"]
+[ext_resource type="Shader" uid="uid://dcgchtiy6vm57" path="res://assetsNEW/graphics/shaders/colorswap.gdshader" id="7"]
+[ext_resource type="PackedScene" uid="uid://c1e10ljuoyiei" path="res://assetsNEW/scenes/objects/collectibles/key.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://b68tiqag02djh" path="res://assetsNEW/scenes/objects/player/player.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://wgr23py8fg1b" path="res://assetsNEW/scenes/objects/ghost/ghost.tscn" id="10"]
+[ext_resource type="Texture2D" uid="uid://cq0dpm1bdy3g5" path="res://assetsNEW/graphics/stage/goal/winconfetti.png" id="11"]
+[ext_resource type="PackedScene" uid="uid://bk4dby1mblf28" path="res://assetsNEW/scenes/HUD/level_hud.tscn" id="12"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gmced"]
+shader = ExtResource("2")
+shader_parameter/period = Vector2(128, 129)
+shader_parameter/speed = Vector2(-3, -1.5)
+shader_parameter/line_thickness = Vector2(0.999, 0.999)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ga6ao"]
+shader = ExtResource("2")
+shader_parameter/period = Vector2(128, 129)
+shader_parameter/speed = Vector2(3, 6)
+shader_parameter/line_thickness = Vector2(0.999, 0.999)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r01o0"]
+shader = ExtResource("3")
+shader_parameter/HighShade = Color(0, 1, 0.5, 1)
+shader_parameter/MidShade = Color(0, 0.35, 0.175, 1)
+shader_parameter/LowShade = Color(0, 0.54, 0.27, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 0.8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_epc5r"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1uiw6"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dbf6m"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xlilo"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jeajs"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_61wj3"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jw3mj"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_onj5w"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_twqhc"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pqgvx"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6uixb"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4pxxm"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qyn5f"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_50u6n"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qgqa2"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a8gbt"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g4hsp"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_07xyp"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0eah1"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vq676"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a1jc8"]
+resource_local_to_scene = true
+shader = ExtResource("7")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0, 0, 0, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsywa"]
+atlas = ExtResource("11")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnbeu"]
+atlas = ExtResource("11")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7y3t3"]
+atlas = ExtResource("11")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j1pws"]
+atlas = ExtResource("11")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6t65c"]
+atlas = ExtResource("11")
+region = Rect2(2048, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5mg4"]
+atlas = ExtResource("11")
+region = Rect2(2560, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cs56q"]
+atlas = ExtResource("11")
+region = Rect2(3072, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kmkoc"]
+atlas = ExtResource("11")
+region = Rect2(3584, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_il7mp"]
+atlas = ExtResource("11")
+region = Rect2(4096, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u8sml"]
+atlas = ExtResource("11")
+region = Rect2(4608, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wkm4"]
+atlas = ExtResource("11")
+region = Rect2(5120, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_seclm"]
+atlas = ExtResource("11")
+region = Rect2(5632, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bm20l"]
+atlas = ExtResource("11")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2wty"]
+atlas = ExtResource("11")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnb51"]
+atlas = ExtResource("11")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pe14l"]
+atlas = ExtResource("11")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j24xf"]
+atlas = ExtResource("11")
+region = Rect2(2048, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_di8st"]
+atlas = ExtResource("11")
+region = Rect2(2560, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ha5e6"]
+atlas = ExtResource("11")
+region = Rect2(3072, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0jk8"]
+atlas = ExtResource("11")
+region = Rect2(3584, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w0t57"]
+atlas = ExtResource("11")
+region = Rect2(4096, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7hoqk"]
+atlas = ExtResource("11")
+region = Rect2(4608, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xirvt"]
+atlas = ExtResource("11")
+region = Rect2(5120, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_atlbl"]
+atlas = ExtResource("11")
+region = Rect2(5632, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mtw2"]
+atlas = ExtResource("11")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vjy5s"]
+atlas = ExtResource("11")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pg5xh"]
+atlas = ExtResource("11")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2qar3"]
+atlas = ExtResource("11")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5yls"]
+atlas = ExtResource("11")
+region = Rect2(2048, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7rcj4"]
+atlas = ExtResource("11")
+region = Rect2(2560, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5sjnb"]
+atlas = ExtResource("11")
+region = Rect2(3072, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bhl58"]
+atlas = ExtResource("11")
+region = Rect2(3584, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o35wo"]
+atlas = ExtResource("11")
+region = Rect2(4096, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g318m"]
+atlas = ExtResource("11")
+region = Rect2(4608, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wsld"]
+atlas = ExtResource("11")
+region = Rect2(5120, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsyp4"]
+atlas = ExtResource("11")
+region = Rect2(5632, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2qre"]
+atlas = ExtResource("11")
+region = Rect2(0, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rk5x6"]
+atlas = ExtResource("11")
+region = Rect2(512, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcqbi"]
+atlas = ExtResource("11")
+region = Rect2(1024, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ej22i"]
+atlas = ExtResource("11")
+region = Rect2(1536, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hhdnb"]
+atlas = ExtResource("11")
+region = Rect2(2048, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_exl4o"]
+atlas = ExtResource("11")
+region = Rect2(2560, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2eq7q"]
+atlas = ExtResource("11")
+region = Rect2(3072, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_647ot"]
+atlas = ExtResource("11")
+region = Rect2(3584, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4buuy"]
+atlas = ExtResource("11")
+region = Rect2(4096, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hr7ed"]
+atlas = ExtResource("11")
+region = Rect2(4608, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bpehh"]
+atlas = ExtResource("11")
+region = Rect2(5120, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phdo0"]
+atlas = ExtResource("11")
+region = Rect2(5632, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sn3x8"]
+atlas = ExtResource("11")
+region = Rect2(0, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cuyka"]
+atlas = ExtResource("11")
+region = Rect2(512, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pxcoq"]
+atlas = ExtResource("11")
+region = Rect2(1024, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1xlae"]
+atlas = ExtResource("11")
+region = Rect2(1536, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e583e"]
+atlas = ExtResource("11")
+region = Rect2(2048, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ioqno"]
+atlas = ExtResource("11")
+region = Rect2(2560, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_31f8f"]
+atlas = ExtResource("11")
+region = Rect2(3072, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ddvrn"]
+atlas = ExtResource("11")
+region = Rect2(3584, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_joneo"]
+atlas = ExtResource("11")
+region = Rect2(4096, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1hdj0"]
+atlas = ExtResource("11")
+region = Rect2(4608, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hj2bc"]
+atlas = ExtResource("11")
+region = Rect2(5120, 2048, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bjile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xsywa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnbeu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7y3t3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j1pws")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6t65c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x5mg4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cs56q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kmkoc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_il7mp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u8sml")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6wkm4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_seclm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bm20l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t2wty")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnb51")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pe14l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j24xf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_di8st")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ha5e6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0jk8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w0t57")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7hoqk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xirvt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_atlbl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mtw2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vjy5s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pg5xh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2qar3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x5yls")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7rcj4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5sjnb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bhl58")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o35wo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g318m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7wsld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xsyp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q2qre")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rk5x6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hcqbi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ej22i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hhdnb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_exl4o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2eq7q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_647ot")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4buuy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hr7ed")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bpehh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phdo0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sn3x8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cuyka")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pxcoq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1xlae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e583e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ioqno")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_31f8f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ddvrn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_joneo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1hdj0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hj2bc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 25.0
+}]
+
+[node name="E-1" type="Node2D" node_paths=PackedStringArray("HUD", "camera", "player", "uncannies", "win_confetti")]
+script = ExtResource("1")
+ID = "E-1"
+lvl_author = "SH2K"
+music = 11
+bounds = 384
+par = 7
+on_time = 25.0
+rank_reqs = Array[int]([0, 1, 2, 3, 4, 5])
+HUD = NodePath("LevelHUD")
+camera = NodePath("Camera2D")
+player = NodePath("Player/Player")
+uncannies = NodePath("Uncannies")
+win_confetti = NodePath("WinConfetti")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="WEBG" type="Node2D" parent="."]
+z_index = -1
+
+[node name="BG" type="Polygon2D" parent="WEBG"]
+z_index = -1
+texture_repeat = 2
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-384, -384, 384, -384, 384, 384, -384, 384)
+
+[node name="ColorRect2" type="ColorRect" parent="WEBG"]
+material = SubResource("ShaderMaterial_gmced")
+custom_minimum_size = Vector2(109, 89)
+offset_left = -384.0
+offset_top = -384.0
+offset_right = 384.0
+offset_bottom = 384.0
+mouse_filter = 2
+color = Color(0, 0.12, 0, 1)
+
+[node name="ColorRect" type="ColorRect" parent="WEBG"]
+material = SubResource("ShaderMaterial_ga6ao")
+custom_minimum_size = Vector2(109, 89)
+offset_left = -384.0
+offset_top = -384.0
+offset_right = 384.0
+offset_bottom = 384.0
+mouse_filter = 2
+color = Color(0, 0.32, 0, 1)
+
+[node name="Tiles" type="Node2D" parent="."]
+
+[node name="NTiles1" type="TileMapLayer" parent="Tiles" groups=["GlassSolids"]]
+material = SubResource("ShaderMaterial_r01o0")
+tile_map_data = PackedByteArray("AADn/+f/AQABAAIAAADn/+j/AQABAAIAAADn/+n/AQABAAIAAADn/+r/AQABAAIAAADn/+v/AQABAAIAAADn/+z/AQABAAIAAADn/+3/AQABAAIAAADn/+7/AQABAAIAAADn/+//AQABAAIAAADn//D/AQABAAIAAADn//H/AQABAAIAAADn//L/AQABAAIAAADn//P/AQABAAIAAADn//T/AQABAAIAAADn//X/AQABAAIAAADn//b/AQABAAIAAADn//f/AQABAAIAAADn//j/AQABAAIAAADn//n/AQABAAIAAADn//r/AQABAAIAAADn//v/AQABAAIAAADn//z/AQABAAIAAADn//3/AQABAAIAAADn//7/AQABAAIAAADn////AQABAAIAAADn/wAAAQABAAIAAADn/wEAAQABAAIAAADn/wIAAQABAAIAAADn/wMAAQABAAIAAADn/wQAAQABAAIAAADn/wUAAQABAAIAAADn/wYAAQABAAIAAADn/wcAAQABAAIAAADn/wgAAQABAAIAAADn/wkAAQABAAIAAADn/woAAQABAAIAAADn/wsAAQABAAIAAADn/wwAAQABAAIAAADn/w0AAQABAAIAAADn/w4AAQABAAIAAADn/w8AAQABAAIAAADn/xAAAQABAAIAAADn/xEAAQABAAIAAADn/xIAAQABAAIAAADn/xMAAQABAAIAAADn/xQAAQABAAIAAADn/xUAAQABAAIAAADn/xYAAQABAAIAAADn/xcAAQABAAIAAADn/xgAAQABAAIAAAAYABgAAQABAAIAAAAXABgAAQABAAIAAAAWABgAAQABAAIAAAAVABgAAQABAAIAAAAUABgAAQABAAIAAAATABgAAQABAAIAAAASABgAAQABAAIAAAARABgAAQABAAIAAAAQABgAAQABAAIAAAAPABgAAQABAAIAAAAOABgAAQABAAIAAAANABgAAQABAAIAAAAMABgAAQABAAIAAAALABgAAQABAAIAAAAKABgAAQABAAIAAAAJABgAAQABAAIAAAAIABgAAQABAAIAAAAHABgAAQABAAIAAAAGABgAAQABAAIAAAAFABgAAQABAAIAAAAEABgAAQABAAIAAAADABgAAQABAAIAAAACABgAAQABAAIAAAABABgAAQABAAIAAAAAABgAAQABAAIA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AAD1/wQAAQAAAAAAAAD2/wQAAQAAAAAAAAD3/wQAAQAAAAAAAAD3/wUAAQAAAAAAAAD2/wUAAQAAAAAAAAD1/wUAAQAAAAAAAAD0/wUAAQAAAAAAAAAAAAgAAQAAAAAAAAAAAAkAAQAAAAAAAAAAAAoAAQAAAAAAAAAAAAsAAQAAAAAAAAABAAkAAQAAAAAAAAABAAgAAQAAAAAAAAABAAoAAQAAAAAAAAABAAsAAQAAAAAAAAAEAP//AQAAAAAAAAAFAP//AQAAAAAAAAAGAP//AQAAAAAAAAAHAP//AQAAAAAAAAAHAP7/AQAAAAAAAAAGAP7/AQAAAAAAAAAFAP7/AQAAAAAAAAAEAP7/AQAAAAAAAAD+//H/AQAAAAAAAAD+//L/AQAAAAAAAAD+//P/AQAAAAAAAAD///P/AQAAAAAAAAD///L/AQAAAAAAAAD///H/AQAAAAAAAAD///D/AQAAAAAAAAD+//D/AQAAAAAAAAD+/+n/AQAAAAAAAAD+/+r/AQAAAAAAAAD+/+v/AQAAAAAAAAD//+v/AQAAAAAAAAD//+r/AQAAAAAAAAD//+n/AQAAAAAAAAD//+j/AQAAAAAAAAD+/+j/AQAAAAAAAADs/+//AQAAAAAAAADt/+//AQAAAAAAAADu/+//AQAAAAAAAADu/+7/AQAAAAAAAADv/+7/AQAAAAAAAADw/+7/AQAAAAAAAADw/+//AQAAAAAAAADv/+//AQAAAAAAAADt/+7/AQAAAAAAAADs/+7/AQAAAAAAAADx/+7/AQAAAAAAAADy/+7/AQAAAAAAAADz/+7/AQAAAAAAAADz/+//AQAAAAAAAADy/+//AQAAAAAAAADx/+//AQAAAAAAAADs//T/AQAAAAAAAADs//X/AQAAAAAAAADs//b/AQAAAAAAAADs//f/AQAAAAAAAADt//f/AQAAAAAAAADt//b/AQAAAAAAAADt//X/AQAAAAAAAADt//T/AQAAAAAAAADs//z/AQAAAAAAAADs//3/AQAAAAAAAADs//7/AQAAAAAAAADs////AQAAAAAAAADs/wAAAQAAAAAAAADs/wEAAQAAAAAAAADs/wIAAQAAAAAAAADs/wMAAQAAAAAAAADt/wMAAQAAAAAAAADt/wIAAQAAAAAAAADt/wEAAQAAAAAAAADt/wAAAQAAAAAAAADt////AQAAAAAAAADt//7/AQAAAAAAAADt//3/AQAAAAAAAADt//z/AQAAAAAAAADs/wwAAQAAAAAAAADs/w0AAQAAAAAAAADs/w4AAQAAAAAAAADs/w8AAQAAAAAAAADt/w8AAQAAAAAAAADt/w4AAQAAAAAAAADt/w0AAQAAAAAAAADt/wwAAQAAAAAAAAASAAgAAQAAAAAAAAASAAkAAQAAAAAAAAASAAoAAQAAAAAAAAASAAsAAQAAAAAAAAATAAsAAQAAAAAAAAATAAoAAQAAAAAAAAATAAkAAQAAAAAAAAATAAgAAQAAAAAAAAASAP3/AQAAAAAAAAATAP3/AQAAAAAAAAATAPz/AQAAAAAAAAATAPv/AQAAAAAAAAATAPr/AQAAAAAAAAATAPn/AQAAAAAAAAATAPj/AQAAAAAAAAATAPP/AQAAAAAAAAATAPL/AQAAAAAAAAATAPH/AQAAAAAAAAATAPD/AQAAAAAAAAATAO//AQAAAAAAAAATAO7/AQAAAAAAAAATAO3/AQAAAAAAAAATAOz/AQAAAAAAAAASAOz/AQAAAAAAAAASAO3/AQAAAAAAAAASAO7/AQAAAAAAAAASAO//AQAAAAAAAAASAPD/AQAAAAAAAAASAPH/AQAAAAAAAAASAPL/AQAAAAAAAAASAPP/AQAAAAAAAAASAPj/AQAAAAAAAAASAPn/AQAAAAAAAAASAPr/AQAAAAAAAAASAPv/AQAAAAAAAAASAPz/AQAAAAAAAAASAP7/AQAAAAAAAAASAP//AQAAAAAAAAATAP//AQAAAAAAAAATAP7/AQAAAAAAAAAAAPP/AQAAAAAAAAABAPP/AQAAAAAAAAACAPP/AQAAAAAAAAADAPP/AQAAAAAAAAAEAPP/AQAAAAAAAAAFAPP/AQAAAAAAAAAFAPL/AQAAAAAAAAAGAPL/AQAAAAAAAAAHAPL/AQAAAAAAAAAHAPP/AQAAAAAAAAAGAPP/AQAAAAAAAAAEAPL/AQAAAAAAAAADAPL/AQAAAAAAAAACAPL/AQAAAAAAAAABAPL/AQAAAAAAAAAAAPL/AQAAAAAAAAAGAPT/AQAAAAAAAAAGAPX/AQAAAAAAAAAGAPb/AQAAAAAAAAAHAPb/AQAAAAAAAAAHAPf/AQAAAAAAAAAGAPf/AQAAAAAAAAAHAPX/AQAAAAAAAAAHAPT/AQAAAAAAAAAKAOn/AQAAAAAAAAAKAOr/AQAAAAAAAAAKAOv/AQAAAAAAAAALAOv/AQAAAAAAAAALAOr/AQAAAAAAAAALAOn/AQAAAAAAAAALAOj/AQAAAAAAAAAKAOj/AQAAAAAAAAAJAAgAAQAAAAAAAAAKAAgAAQAAAAAAAAALAAgAAQAAAAAAAAALAAkAAQAAAAAAAAAKAAkAAQAAAAAAAAAJAAkAAQAAAAAAAAAIAAgAAQAAAAAAAAAIAAkAAQAAAAAAAAD2/wwAAQAAAAAAAAD2/w0AAQAAAAAAAAD3/wwAAQAAAAAAAAD3/w0AAQAAAAAAAAD0/xIAAQAAAAAAAAD0/xMAAQAAAAAAAAD1/xIAAQAAAAAAAAD1/xMAAQAAAAAAAAD2/woAAQAAAAAAAAD2/wsAAQAAAAAAAAD2/xIAAQAAAAAAAAD2/xMAAQAAAAAAAAD3/woAAQAAAAAAAAD3/wsAAQAAAAAAAAD3/xIAAQAAAAAAAAD3/xMAAQAAAAAAAAD4/xIAAQAAAAAAAAD4/xMAAQAAAAAAAAD5/xIAAQAAAAAAAAD5/xMAAQAAAAAAAAD6/xIAAQAAAAAAAAD6/xMAAQAAAAAAAAD7/xIAAQAAAAAAAAD7/xMAAQAAAAAAAAAIABAAAQAAAAAAAAAIABEAAQAAAAAAAAAJABAAAQAAAAAAAAAJABEAAQAAAAAAAAAKABAAAQAAAAAAAAAKABEAAQAAAAAAAAALABAAAQAAAAAAAAALABEAAQAAAAAAAAAMABAAAQAAAAAAAAAMABEAAQAAAAAAAAANABAAAQAAAAAAAAANABEAAQAAAAAAAAAOABAAAQAAAAAAAAAOABEAAQAAAAAAAAAPABAAAQAAAAAAAAAPABEAAQAAAAAAAAAQABAAAQAAAAAAAAAQABEAAQAAAAAAAAARABAAAQAAAAAAAAARABEAAQAAAAAAAAASABAAAQAAAAAAAAASABEAAQAAAAAAAAATABAAAQAAAAAAAAATABEAAQAAAAAAAAA=")
+tile_set = ExtResource("4")
+
+[node name="Goal" parent="." node_paths=PackedStringArray("level") instance=ExtResource("5")]
+position = Vector2(32, -96)
+level = NodePath("..")
+
+[node name="Gimmicks" type="Node2D" parent="."]
+
+[node name="Blocks" type="Node2D" parent="."]
+
+[node name="KeyDoor2" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-304, 128)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 128)
+shader = SubResource("ShaderMaterial_epc5r")
+level = NodePath("../..")
+
+[node name="KeyDoor3" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-304, 320)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 128)
+shader = SubResource("ShaderMaterial_1uiw6")
+level = NodePath("../..")
+
+[node name="KeyDoor4" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(304, 64)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 128)
+shader = SubResource("ShaderMaterial_dbf6m")
+level = NodePath("../..")
+
+[node name="KeyDoor5" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-64, 176)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(128, 32)
+shader = SubResource("ShaderMaterial_xlilo")
+level = NodePath("../..")
+
+[node name="KeyDoor6" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-160, -272)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(64, 32)
+shader = SubResource("ShaderMaterial_jeajs")
+level = NodePath("../..")
+
+[node name="KeyDoor7" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(160, -208)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(64, 32)
+shader = SubResource("ShaderMaterial_61wj3")
+level = NodePath("../..")
+
+[node name="KeyDoor8" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-32, 304)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(64, 32)
+shader = SubResource("ShaderMaterial_jw3mj")
+level = NodePath("../..")
+
+[node name="KeyDoor9" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(80, 144)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(96, 32)
+shader = SubResource("ShaderMaterial_onj5w")
+level = NodePath("../..")
+
+[node name="KeyDoor10" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(240, 144)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(96, 32)
+shader = SubResource("ShaderMaterial_twqhc")
+level = NodePath("../..")
+
+[node name="KeyDoor11" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(176, -16)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(96, 32)
+shader = SubResource("ShaderMaterial_pqgvx")
+level = NodePath("../..")
+
+[node name="KeyDoor12" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-304, -224)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_6uixb")
+level = NodePath("../..")
+
+[node name="KeyDoor13" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-304, -96)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_4pxxm")
+level = NodePath("../..")
+
+[node name="KeyDoor16" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(304, -160)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_qyn5f")
+level = NodePath("../..")
+
+[node name="KeyDoor17" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(304, 224)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_50u6n")
+level = NodePath("../..")
+
+[node name="KeyDoor18" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(304, -352)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_qgqa2")
+level = NodePath("../..")
+
+[node name="KeyDoor14" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-16, -288)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_a8gbt")
+level = NodePath("../..")
+
+[node name="KeyDoor15" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(176, -272)
+color = Color(1, 0.258824, 0.501961, 1)
+size = Vector2(32, 96)
+shader = SubResource("ShaderMaterial_g4hsp")
+level = NodePath("../..")
+
+[node name="KeyDoor19" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(112, -80)
+color = Color(0.716667, 0.5, 1, 1)
+size = Vector2(32, 96)
+shader = SubResource("ShaderMaterial_07xyp")
+level = NodePath("../..")
+
+[node name="KeyDoor20" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-16, -160)
+color = Color(0.716667, 0.5, 1, 1)
+size = Vector2(32, 64)
+shader = SubResource("ShaderMaterial_0eah1")
+level = NodePath("../..")
+
+[node name="KeyDoor21" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(32, -16)
+color = Color(0.716667, 0.5, 1, 1)
+size = Vector2(64, 32)
+shader = SubResource("ShaderMaterial_vq676")
+level = NodePath("../..")
+
+[node name="KeyDoor22" parent="Blocks" node_paths=PackedStringArray("level") instance=ExtResource("6")]
+position = Vector2(-56, -72)
+color = Color(0.716667, 0.5, 1, 1)
+size = Vector2(48, 48)
+shader = SubResource("ShaderMaterial_a1jc8")
+level = NodePath("../..")
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="Key6" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(-208, -200)
+level = NodePath("../..")
+
+[node name="Key7" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(-352, -160)
+level = NodePath("../..")
+
+[node name="Key8" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(-352, 0)
+level = NodePath("../..")
+
+[node name="Key9" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(-352, 224)
+level = NodePath("../..")
+
+[node name="Key10" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(-64, 240)
+level = NodePath("../..")
+
+[node name="Key11" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(176, 48)
+level = NodePath("../..")
+
+[node name="Key12" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(352, -32)
+level = NodePath("../..")
+
+[node name="Key13" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(352, 160)
+level = NodePath("../..")
+
+[node name="Key14" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(1, 0.258824, 0.501961, 1)
+position = Vector2(80, -272)
+level = NodePath("../..")
+
+[node name="Key15" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(0.716667, 0.5, 1, 1)
+position = Vector2(80, -352)
+level = NodePath("../..")
+
+[node name="Key16" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(0.716667, 0.5, 1, 1)
+position = Vector2(352, -256)
+level = NodePath("../..")
+
+[node name="Key17" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("8")]
+modulate = Color(0.716667, 0.5, 1, 1)
+position = Vector2(-352, 352)
+level = NodePath("../..")
+
+[node name="Baddies" type="Node2D" parent="."]
+
+[node name="Player" type="Node2D" parent="."]
+
+[node name="Player" parent="Player" instance=ExtResource("9")]
+position = Vector2(-160, 32)
+
+[node name="Uncannies" type="Node2D" parent="."]
+
+[node name="Ghost" parent="Uncannies" node_paths=PackedStringArray("target") instance=ExtResource("10")]
+position = Vector2(224, -224)
+target = NodePath("../../Player/Player")
+
+[node name="Ghost2" parent="Uncannies" node_paths=PackedStringArray("target") instance=ExtResource("10")]
+position = Vector2(384, -544)
+target = NodePath("../../Player/Player")
+
+[node name="Ghost3" parent="Uncannies" node_paths=PackedStringArray("target") instance=ExtResource("10")]
+position = Vector2(-352, -352)
+target = NodePath("../../Player/Player")
+
+[node name="Ghost4" parent="Uncannies" node_paths=PackedStringArray("target") instance=ExtResource("10")]
+position = Vector2(352, 224)
+target = NodePath("../../Player/Player")
+
+[node name="WinConfetti" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_bjile")
+
+[node name="LevelHUD" parent="." node_paths=PackedStringArray("level") instance=ExtResource("12")]
+visible = false
+level = NodePath("..")

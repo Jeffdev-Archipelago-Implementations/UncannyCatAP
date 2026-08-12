@@ -1,0 +1,96 @@
+[gd_scene load_steps=14 format=3 uid="uid://bggord3cg81w3"]
+
+[ext_resource type="Script" uid="uid://b7q11u4cx4has" path="res://assetsNEW/scenes/game/minigames/bingball/bingball_game.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://urmwwed1ljjq" path="res://assetsNEW/scenes/game/minigames/bingball/scenes/bingball_menu.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://c24qgah2qa5lm" path="res://assetsNEW/scenes/game/minigames/bingball/scenes/bingball_gameplay.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://cd5v27phv6lcq" path="res://assetsNEW/graphics/HUD/hud_bg.png" id="4"]
+[ext_resource type="Texture2D" uid="uid://di4jkvt166n5s" path="res://assetsNEW/graphics/HUD/hud_border.png" id="5"]
+[ext_resource type="Texture2D" uid="uid://cnv1nc0vdpehp" path="res://assetsNEW/graphics/minigames/bingball/bingball_sign_base.png" id="6"]
+[ext_resource type="Texture2D" uid="uid://c1vo1fv6oqdn" path="res://assetsNEW/graphics/HUD/logo_small/logo_small_en.png" id="7"]
+[ext_resource type="PackedScene" uid="uid://dtk1sfsaj1rwn" path="res://assetsNEW/scenes/game/minigames/bingball/ui/ball_counter.tscn" id="8"]
+[ext_resource type="Texture2D" uid="uid://bgddyikukr77q" path="res://assetsNEW/graphics/minigames/bingball/pinball_ui.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://celthev5atcn3" path="res://assetsNEW/graphics/minigames/bingball/ui/bingball_score.png" id="10"]
+[ext_resource type="PackedScene" uid="uid://bnpwa43lfqx8q" path="res://assetsNEW/scenes/game/minigames/bingball/ui/7_segment_display.tscn" id="11"]
+[ext_resource type="Texture2D" uid="uid://crxykflmlvqx3" path="res://assetsNEW/graphics/minigames/bingball/pinball.png" id="12"]
+[ext_resource type="Texture2D" uid="uid://csno8fv11ye45" path="res://assetsNEW/graphics/minigames/bingball/ui/flavor_display_overlay.png" id="13"]
+
+[node name="BingballGame" type="Node2D" node_paths=PackedStringArray("flavor_display", "ball_counter", "score_display")]
+script = ExtResource("1")
+flavor_display = NodePath("HUD/FlavorViewportContainer/FlavorDisplay")
+ball_counter = NodePath("HUD/BallCounter")
+score_display = NodePath("HUD/Score/Display")
+packed_minigame_scenes = Array[PackedScene]([ExtResource("2"), ExtResource("3")])
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 50
+
+[node name="Bg" type="Sprite2D" parent="HUD"]
+position = Vector2(128, 256)
+texture = ExtResource("4")
+
+[node name="Bar" type="Sprite2D" parent="HUD"]
+position = Vector2(252, 256)
+scale = Vector2(0.999999, 64)
+texture = ExtResource("5")
+
+[node name="TitleBase" type="Sprite2D" parent="HUD"]
+position = Vector2(0, 40)
+texture = ExtResource("6")
+centered = false
+
+[node name="Sprite2D" type="Sprite2D" parent="HUD"]
+position = Vector2(124, 20)
+scale = Vector2(0.516, 0.482)
+texture = ExtResource("7")
+
+[node name="BallCounter" parent="HUD" instance=ExtResource("8")]
+offset_top = 204.0
+offset_right = 248.0
+offset_bottom = 304.0
+balls = 3
+ball_icon = ExtResource("9")
+
+[node name="Score" type="Node2D" parent="HUD"]
+position = Vector2(128, 342)
+
+[node name="Label" type="Sprite2D" parent="HUD/Score"]
+texture = ExtResource("10")
+
+[node name="Display" parent="HUD/Score" instance=ExtResource("11")]
+position = Vector2(-74, 27)
+digits = 10
+color = Color(0.952941, 0.862745, 0.286275, 1)
+
+[node name="FlavorBackground" type="ColorRect" parent="HUD"]
+offset_left = 30.0
+offset_top = 406.0
+offset_right = 222.0
+offset_bottom = 486.0
+color = Color(0.183733, 0.113749, 0.094425, 1)
+
+[node name="FlavorViewportContainer" type="SubViewportContainer" parent="HUD"]
+offset_left = 102.0
+offset_top = 436.0
+offset_right = 150.0
+offset_bottom = 456.0
+scale = Vector2(4, 4)
+pivot_offset = Vector2(24, 10)
+
+[node name="FlavorDisplay" type="SubViewport" parent="HUD/FlavorViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(48, 20)
+render_target_update_mode = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="HUD/FlavorViewportContainer/FlavorDisplay"]
+position = Vector2(49.5, 15.75)
+texture = ExtResource("12")
+
+[node name="FlavorOverlay" type="TextureRect" parent="HUD"]
+offset_left = 30.0
+offset_top = 406.0
+offset_right = 222.0
+offset_bottom = 486.0
+texture = ExtResource("13")

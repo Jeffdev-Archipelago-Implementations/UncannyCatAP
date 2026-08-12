@@ -1,0 +1,15 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://vgujhautmk5n"]
+
+[ext_resource type="Texture2D" uid="uid://c568qsdiwb538" path="res://assetsNEW/scenes/game/minigames/uncanny_dash/cats.png" id="1"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_k2kqm"]
+texture = ExtResource("1")
+texture_region_size = Vector2i(8, 8)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[resource]
+tile_size = Vector2i(8, 8)
+sources/0 = SubResource("TileSetAtlasSource_k2kqm")

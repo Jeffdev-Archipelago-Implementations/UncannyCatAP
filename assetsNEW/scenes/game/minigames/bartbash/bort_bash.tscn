@@ -1,0 +1,39 @@
+[gd_scene load_steps=6 format=3 uid="uid://deddmbosrcedk"]
+
+[ext_resource type="Script" uid="uid://6q3anjiy5bdt" path="res://assetsNEW/scenes/game/minigames/bartbash/bort_bash.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://dxrcbmk54uutm" path="res://assetsNEW/scenes/game/minigames/bartbash/scenes/bort_game.tscn" id="2"]
+[ext_resource type="FontFile" uid="uid://cep5kfn2ih83v" path="res://assetsNEW/fonts/impact.ttf" id="3"]
+
+[sub_resource type="Gradient" id="Gradient_fpel6"]
+offsets = PackedFloat32Array(0, 0.52381, 1)
+colors = PackedColorArray(0.1, 0.1, 0.1, 1, 0.9, 0.9, 0.9, 1, 0.101961, 0.101961, 0.101961, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_j64pl"]
+gradient = SubResource("Gradient_fpel6")
+width = 256
+height = 512
+fill_to = Vector2(0, 1)
+
+[node name="BortBash" type="Node2D"]
+script = ExtResource("1")
+packed_minigame_scenes = Array[PackedScene]([ExtResource("2")])
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="Polygon2D" type="Polygon2D" parent="HUD"]
+texture = SubResource("GradientTexture2D_j64pl")
+polygon = PackedVector2Array(0, 0, 256, 0, 256, 512, 0, 512)
+
+[node name="Label" type="Label" parent="HUD"]
+offset_right = 256.0
+offset_bottom = 128.0
+theme_override_colors/font_color = Color(1, 0.583333, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("3")
+theme_override_font_sizes/font_size = 48
+text = "BORT BASH"
+horizontal_alignment = 1
+vertical_alignment = 1

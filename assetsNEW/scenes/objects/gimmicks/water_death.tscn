@@ -1,0 +1,137 @@
+[gd_scene load_steps=18 format=3 uid="uid://cegktw5htxqca"]
+
+[ext_resource type="Script" uid="uid://dhj36w3sn00ep" path="res://assetsNEW/scenes/objects/gimmicks/water_death.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://q0favw45ywww" path="res://assetsNEW/graphics/misc/water_splash.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://c516ttguqui7q" path="res://assetsNEW/graphics/misc/water_ripple.png" id="3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hty21"]
+atlas = ExtResource("2")
+region = Rect2(0, 0, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_om5ca"]
+atlas = ExtResource("2")
+region = Rect2(128, 0, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rdvf4"]
+atlas = ExtResource("2")
+region = Rect2(256, 0, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xj485"]
+atlas = ExtResource("2")
+region = Rect2(384, 0, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fbueg"]
+atlas = ExtResource("2")
+region = Rect2(512, 0, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k3cs0"]
+atlas = ExtResource("2")
+region = Rect2(256, 126, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xvn3r"]
+atlas = ExtResource("2")
+region = Rect2(0, 252, 128, 126)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6kx2d"]
+atlas = ExtResource("2")
+region = Rect2(256, 252, 128, 126)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_xc146"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hty21")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_om5ca")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rdvf4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xj485")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fbueg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k3cs0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xvn3r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6kx2d")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"splash",
+"speed": 10.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xc146"]
+atlas = ExtResource("3")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8heel"]
+atlas = ExtResource("3")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5vtsu"]
+atlas = ExtResource("3")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3ovd0"]
+atlas = ExtResource("3")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s3jn5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xc146")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8heel")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5vtsu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3ovd0")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"ripple",
+"speed": 10.0
+}]
+
+[node name="WaterDeath" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1")
+always_kill = null
+
+[node name="Splash" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+sprite_frames = SubResource("SpriteFrames_xc146")
+animation = &"splash"
+frame = 9
+frame_progress = 1.0
+offset = Vector2(0, -48)
+
+[node name="Ripple" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+sprite_frames = SubResource("SpriteFrames_s3jn5")
+animation = &"ripple"
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

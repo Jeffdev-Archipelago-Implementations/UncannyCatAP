@@ -1,0 +1,820 @@
+[gd_scene load_steps=83 format=4 uid="uid://d2gdxqhcwo3hy"]
+
+[ext_resource type="Script" uid="uid://cuelgros0yw5s" path="res://assetsNEW/scenes/game/levels/level.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://wnauegtjdqx1" path="res://assetsNEW/graphics/stage/deco/W1/checkerboardpattern.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://b6mnaeium32gc" path="res://assetsNEW/graphics/stage/deco/W1/whitenoise.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://d4l7y1io83741" path="res://assetsNEW/graphics/stage/deco/W1/bubble.png" id="4"]
+[ext_resource type="Shader" uid="uid://dcgchtiy6vm57" path="res://assetsNEW/graphics/shaders/colorswap.gdshader" id="5"]
+[ext_resource type="TileSet" uid="uid://m6jn6mhs3i0e" path="res://assetsNEW/scenes/tiles/normalmap_tiles.tres" id="6"]
+[ext_resource type="PackedScene" uid="uid://bbp84ahibwsn3" path="res://assetsNEW/scenes/objects/important/goal.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://bcfwmnwqqhoey" path="res://assetsNEW/scenes/objects/gimmicks/sand_pit.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://bqsrs6wh6gc17" path="res://assetsNEW/scenes/objects/blocks/d_block.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://piiexm01bud6" path="res://assetsNEW/scenes/objects/collectibles/coin.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://b68tiqag02djh" path="res://assetsNEW/scenes/objects/player/player.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://wgr23py8fg1b" path="res://assetsNEW/scenes/objects/ghost/ghost.tscn" id="12"]
+[ext_resource type="Texture2D" uid="uid://cq0dpm1bdy3g5" path="res://assetsNEW/graphics/stage/goal/winconfetti.png" id="13"]
+[ext_resource type="PackedScene" uid="uid://bk4dby1mblf28" path="res://assetsNEW/scenes/HUD/level_hud.tscn" id="14"]
+
+[sub_resource type="Gradient" id="Gradient_b42yw"]
+colors = PackedColorArray(0.436425, 0.69, 0.3795, 1, 0, 0.709804, 0.4, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8d1vd"]
+resource_local_to_scene = true
+seed = 5
+frequency = 0.004
+fractal_weighted_strength = 0.5
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_2w4ly"]
+resource_local_to_scene = true
+seamless = true
+color_ramp = SubResource("Gradient_b42yw")
+noise = SubResource("FastNoiseLite_8d1vd")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0tiji"]
+shader = ExtResource("5")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0.721569, 0.721569, 0.721569, 1)
+shader_parameter/LowShade = Color(0.419608, 0.419608, 0.419608, 1)
+shader_parameter/ExtraShade = Color(0, 0, 0, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7tmkn"]
+shader = ExtResource("5")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0.411765, 0.709804, 0.74902, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0.1786, 0.436003, 0.47, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ieikj"]
+shader = ExtResource("5")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0.717647, 0.411765, 0.74902, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0.44086, 0.1786, 0.47, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8sp8h"]
+shader = ExtResource("5")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0.74902, 0.411765, 0.490196, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0.47, 0.1786, 0.246593, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_anhk6"]
+shader = ExtResource("5")
+shader_parameter/HighShade = Color(1, 1, 1, 1)
+shader_parameter/MidShade = Color(0.411765, 0.74902, 0.439216, 1)
+shader_parameter/LowShade = Color(0, 0, 0, 1)
+shader_parameter/ExtraShade = Color(0.1786, 0.47, 0.202883, 1)
+shader_parameter/alpha = 1.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsywa"]
+atlas = ExtResource("13")
+region = Rect2(0, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnbeu"]
+atlas = ExtResource("13")
+region = Rect2(512, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7y3t3"]
+atlas = ExtResource("13")
+region = Rect2(1024, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j1pws"]
+atlas = ExtResource("13")
+region = Rect2(1536, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6t65c"]
+atlas = ExtResource("13")
+region = Rect2(2048, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5mg4"]
+atlas = ExtResource("13")
+region = Rect2(2560, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cs56q"]
+atlas = ExtResource("13")
+region = Rect2(3072, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kmkoc"]
+atlas = ExtResource("13")
+region = Rect2(3584, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_il7mp"]
+atlas = ExtResource("13")
+region = Rect2(4096, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u8sml"]
+atlas = ExtResource("13")
+region = Rect2(4608, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wkm4"]
+atlas = ExtResource("13")
+region = Rect2(5120, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_seclm"]
+atlas = ExtResource("13")
+region = Rect2(5632, 0, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bm20l"]
+atlas = ExtResource("13")
+region = Rect2(0, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t2wty"]
+atlas = ExtResource("13")
+region = Rect2(512, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnb51"]
+atlas = ExtResource("13")
+region = Rect2(1024, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pe14l"]
+atlas = ExtResource("13")
+region = Rect2(1536, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j24xf"]
+atlas = ExtResource("13")
+region = Rect2(2048, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_di8st"]
+atlas = ExtResource("13")
+region = Rect2(2560, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ha5e6"]
+atlas = ExtResource("13")
+region = Rect2(3072, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0jk8"]
+atlas = ExtResource("13")
+region = Rect2(3584, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w0t57"]
+atlas = ExtResource("13")
+region = Rect2(4096, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7hoqk"]
+atlas = ExtResource("13")
+region = Rect2(4608, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xirvt"]
+atlas = ExtResource("13")
+region = Rect2(5120, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_atlbl"]
+atlas = ExtResource("13")
+region = Rect2(5632, 512, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mtw2"]
+atlas = ExtResource("13")
+region = Rect2(0, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vjy5s"]
+atlas = ExtResource("13")
+region = Rect2(512, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pg5xh"]
+atlas = ExtResource("13")
+region = Rect2(1024, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2qar3"]
+atlas = ExtResource("13")
+region = Rect2(1536, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5yls"]
+atlas = ExtResource("13")
+region = Rect2(2048, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7rcj4"]
+atlas = ExtResource("13")
+region = Rect2(2560, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5sjnb"]
+atlas = ExtResource("13")
+region = Rect2(3072, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bhl58"]
+atlas = ExtResource("13")
+region = Rect2(3584, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o35wo"]
+atlas = ExtResource("13")
+region = Rect2(4096, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g318m"]
+atlas = ExtResource("13")
+region = Rect2(4608, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7wsld"]
+atlas = ExtResource("13")
+region = Rect2(5120, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsyp4"]
+atlas = ExtResource("13")
+region = Rect2(5632, 1024, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2qre"]
+atlas = ExtResource("13")
+region = Rect2(0, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rk5x6"]
+atlas = ExtResource("13")
+region = Rect2(512, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hcqbi"]
+atlas = ExtResource("13")
+region = Rect2(1024, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ej22i"]
+atlas = ExtResource("13")
+region = Rect2(1536, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hhdnb"]
+atlas = ExtResource("13")
+region = Rect2(2048, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_exl4o"]
+atlas = ExtResource("13")
+region = Rect2(2560, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2eq7q"]
+atlas = ExtResource("13")
+region = Rect2(3072, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_647ot"]
+atlas = ExtResource("13")
+region = Rect2(3584, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4buuy"]
+atlas = ExtResource("13")
+region = Rect2(4096, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hr7ed"]
+atlas = ExtResource("13")
+region = Rect2(4608, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bpehh"]
+atlas = ExtResource("13")
+region = Rect2(5120, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_phdo0"]
+atlas = ExtResource("13")
+region = Rect2(5632, 1536, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sn3x8"]
+atlas = ExtResource("13")
+region = Rect2(0, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cuyka"]
+atlas = ExtResource("13")
+region = Rect2(512, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pxcoq"]
+atlas = ExtResource("13")
+region = Rect2(1024, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1xlae"]
+atlas = ExtResource("13")
+region = Rect2(1536, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e583e"]
+atlas = ExtResource("13")
+region = Rect2(2048, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ioqno"]
+atlas = ExtResource("13")
+region = Rect2(2560, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_31f8f"]
+atlas = ExtResource("13")
+region = Rect2(3072, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ddvrn"]
+atlas = ExtResource("13")
+region = Rect2(3584, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_joneo"]
+atlas = ExtResource("13")
+region = Rect2(4096, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1hdj0"]
+atlas = ExtResource("13")
+region = Rect2(4608, 2048, 512, 512)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hj2bc"]
+atlas = ExtResource("13")
+region = Rect2(5120, 2048, 512, 512)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jjwux"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xsywa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnbeu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7y3t3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j1pws")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6t65c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x5mg4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cs56q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kmkoc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_il7mp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u8sml")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6wkm4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_seclm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bm20l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t2wty")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnb51")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pe14l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j24xf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_di8st")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ha5e6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0jk8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w0t57")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7hoqk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xirvt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_atlbl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mtw2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vjy5s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pg5xh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2qar3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x5yls")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7rcj4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5sjnb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bhl58")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o35wo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g318m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7wsld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xsyp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q2qre")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rk5x6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hcqbi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ej22i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hhdnb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_exl4o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2eq7q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_647ot")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4buuy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hr7ed")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bpehh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_phdo0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sn3x8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cuyka")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pxcoq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1xlae")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e583e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ioqno")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_31f8f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ddvrn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_joneo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1hdj0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hj2bc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 25.0
+}]
+
+[node name="1-5" type="Node2D" node_paths=PackedStringArray("HUD", "camera", "player", "uncannies", "win_confetti")]
+script = ExtResource("1")
+ID = "1-5"
+lvl_author = "SH2K"
+music = 3
+par = 5
+on_time = 20.0
+rank_reqs = Array[int]([0, 1, 4000, 7000, 9000, 10000])
+HUD = NodePath("LevelHUD")
+camera = NodePath("Camera2D")
+player = NodePath("Player/Player")
+uncannies = NodePath("Uncannies")
+win_confetti = NodePath("WinConfetti")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="W1BG" type="Node2D" parent="."]
+z_index = -3
+
+[node name="BG" type="Polygon2D" parent="W1BG"]
+texture_repeat = 2
+texture = SubResource("NoiseTexture2D_2w4ly")
+polygon = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+
+[node name="Checkerboard" type="Polygon2D" parent="W1BG"]
+modulate = Color(0.65, 0.65, 0.65, 0.0980392)
+texture_filter = 2
+texture_repeat = 2
+texture = ExtResource("2")
+texture_offset = Vector2(8, 8)
+polygon = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+
+[node name="Polygon2D" type="Polygon2D" parent="W1BG"]
+modulate = Color(1, 1, 1, 0.156863)
+texture_repeat = 2
+texture = ExtResource("3")
+texture_scale = Vector2(2, 2)
+polygon = PackedVector2Array(-256, -256, -256, 256, 256, 256, 256, -256)
+
+[node name="Deco" type="Node2D" parent="."]
+
+[node name="Bubble" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(-80, 16)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble2" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(-80, 144)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble3" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(80, 176)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble4" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(80, -48)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble5" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(80, -144)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble6" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(-80, -208)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble7" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(-240, -240)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble8" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(-240, 240)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble9" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(240, 240)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Bubble10" type="Sprite2D" parent="Deco"]
+z_index = 1
+position = Vector2(240, -240)
+scale = Vector2(0.135, 0.135)
+texture = ExtResource("4")
+
+[node name="Tiles" type="Node2D" parent="."]
+
+[node name="NTiles1" type="TileMapLayer" parent="Tiles"]
+material = SubResource("ShaderMaterial_0tiji")
+tile_map_data = PackedByteArray("AADv/+//AQAAAAAAAADv//D/AQAAAAAAAADv//H/AQAAAAAAAADv//L/AQAAAAAAAADv//P/AQAAAAAAAADv//T/AQAAAAAAAADv//X/AQAAAAAAAADv//b/AQAAAAAAAADv//f/AQAAAAAAAADv//j/AQAAAAAAAADv//n/AQAAAAAAAADv//r/AQAAAAAAAADv//v/AQAAAAAAAADv//z/AQAAAAAAAADv//3/AQAAAAAAAADv//7/AQAAAAAAAADv////AQAAAAAAAADv/wAAAQAAAAAAAADv/wEAAQAAAAAAAADv/wIAAQAAAAAAAADv/wMAAQAAAAAAAADv/wQAAQAAAAAAAADv/wUAAQAAAAAAAADv/wYAAQAAAAAAAADv/wcAAQAAAAAAAADv/wgAAQAAAAAAAADv/wkAAQAAAAAAAADv/woAAQAAAAAAAADv/wsAAQAAAAAAAADv/wwAAQAAAAAAAADv/w0AAQAAAAAAAADv/w4AAQAAAAAAAADv/w8AAQAAAAAAAADv/xAAAQAAAAAAAADw/+//AQAAAAAAAADw//D/AQAAAAEAAADw//H/AQAAAAMAAADw//L/AQAAAAEAAADw//P/AQAAAAMAAADw//T/AQAAAAEAAADw//X/AQAAAAMAAADw//b/AQAAAAEAAADw//f/AQAAAAMAAADw//j/AQAAAAEAAADw//n/AQAAAAMAAADw//r/AQAAAAEAAADw//v/AQAAAAMAAADw//z/AQAAAAEAAADw//3/AQAAAAMAAADw//7/AQAAAAEAAADw////AQAAAAMAAADw/wAAAQAAAAEAAADw/wEAAQAAAAMAAADw/wIAAQAAAAEAAADw/wMAAQAAAAMAAADw/wQAAQAAAAEAAADw/wUAAQAAAAMAAADw/wYAAQAAAAEAAADw/wcAAQAAAAMAAADw/wgAAQAAAAEAAADw/wkAAQAAAAMAAADw/woAAQAAAAEAAADw/wsAAQAAAAMAAADw/wwAAQAAAAEAAADw/w0AAQAAAAMAAADw/w4AAQAAAAEAAADw/w8AAQAAAAMAAADw/xAAAQAAAAAAAADx/+//AQAAAAAAAADx//D/AQACAAEAAADx//H/AQACAAMAAADx//L/AQACAAEAAADx//P/AQACAAMAAADx//T/AQACAAEAAADx//X/AQACAAMAAADx//b/AQACAAEAAADx//f/AQACAAMAAADx//j/AQACAAEAAADx//n/AQACAAMAAADx//r/AQACAAEAAADx//v/AQACAAMAAADx//z/AQACAAEAAADx//3/AQACAAMAAADx//7/AQACAAEAAADx////AQACAAMAAADx/wAAAQACAAEAAADx/wEAAQACAAMAAADx/wIAAQACAAEAAADx/wMAAQACAAMAAADx/wQAAQACAAEAAADx/wUAAQACAAMAAADx/wYAAQACAAEAAADx/wcAAQACAAMAAADx/wgAAQACAAEAAADx/wkAAQACAAMAAADx/woAAQACAAEAAADx/wsAAQACAAMAAADx/wwAAQACAAEAAADx/w0AAQACAAMAAADx/w4AAQACAAEAAADx/w8AAQACAAMAAADx/xAAAQAAAAAAAADy/+//AQAAAAAAAADy/xAAAQAAAAAAAADz/+//AQAAAAAAAADz/xAAAQAAAAAAAAD0/+//AQAAAAAAAAD0/xAAAQAAAAAAAAD1/+//AQAAAAAAAAD1/xAAAQAAAAAAAAD2/+//AQAAAAAAAAD2/xAAAQAAAAAAAAD3/+//AQAAAAAAAAD3/xAAAQAAAAAAAAD4/+//AQAAAAAAAAD4/xAAAQAAAAAAAAD5/+//AQAAAAAAAAD5/xAAAQAAAAAAAAD6/+//AQAAAAAAAAD6//D/AQAAAAEAAAD6//H/AQAAAAMAAAD6//L/AQAAAAEAAAD6//P/AQAAAAMAAAD6/wAAAQAAAAEAAAD6/wEAAQAAAAMAAAD6/wIAAQAAAAEAAAD6/wMAAQAAAAMAAAD6/wQAAQAAAAEAAAD6/wUAAQAAAAMAAAD6/wYAAQAAAAEAAAD6/wcAAQAAAAMAAAD6/wgAAQAAAAEAAAD6/wkAAQAAAAMAAAD6/xAAAQAAAAAAAAD7/+//AQAAAAAAAAD7//D/AQACAAEAAAD7//H/AQACAAMAAAD7//L/AQACAAEAAAD7//P/AQACAAMAAAD7/wAAAQACAAEAAAD7/wEAAQACAAMAAAD7/wIAAQACAAEAAAD7/wMAAQACAAMAAAD7/wQAAQACAAEAAAD7/wUAAQACAAMAAAD7/wYAAQACAAEAAAD7/wcAAQACAAMAAAD7/wgAAQACAAEAAAD7/wkAAQACAAMAAAD7/xAAAQAAAAAAAAD8/+//AQAAAAAAAAD8/xAAAQAAAAAAAAD9/+//AQAAAAAAAAD9/xAAAQAAAAAAAAD+/+//AQAAAAAAAAD+/xAAAQAAAAAAAAD//+//AQAAAAAAAAD//xAAAQAAAAAAAAAAAO//AQAAAAAAAAAAABAAAQAAAAAAAAABAO//AQAAAAAAAAABABAAAQAAAAAAAAACAO//AQAAAAAAAAACABAAAQAAAAAAAAADAO//AQAAAAAAAAADABAAAQAAAAAAAAAEAO//AQAAAAAAAAAEAPb/AQAAAAEAAAAEAPf/AQAAAAMAAAAEAPj/AQAAAAEAAAAEAPn/AQAAAAMAAAAEAPr/AQAAAAEAAAAEAPv/AQAAAAMAAAAEAPz/AQAAAAEAAAAEAP3/AQAAAAMAAAAEAAoAAQAAAAEAAAAEAAsAAQAAAAMAAAAEAAwAAQAAAAEAAAAEAA0AAQAAAAMAAAAEAA4AAQAAAAEAAAAEAA8AAQAAAAMAAAAEABAAAQAAAAAAAAAFAO//AQAAAAAAAAAFAPb/AQACAAEAAAAFAPf/AQACAAMAAAAFAPj/AQACAAEAAAAFAPn/AQACAAMAAAAFAPr/AQACAAEAAAAFAPv/AQACAAMAAAAFAPz/AQACAAEAAAAFAP3/AQACAAMAAAAFAAoAAQACAAEAAAAFAAsAAQACAAMAAAAFAAwAAQACAAEAAAAFAA0AAQACAAMAAAAFAA4AAQACAAEAAAAFAA8AAQACAAMAAAAFABAAAQAAAAAAAAAGAO//AQAAAAAAAAAGABAAAQAAAAAAAAAHAO//AQAAAAAAAAAHABAAAQAAAAAAAAAIAO//AQAAAAAAAAAIABAAAQAAAAAAAAAJAO//AQAAAAAAAAAJABAAAQAAAAAAAAAKAO//AQAAAAAAAAAKABAAAQAAAAAAAAALAO//AQAAAAAAAAALABAAAQAAAAAAAAAMAO//AQAAAAAAAAAMABAAAQAAAAAAAAANAO//AQAAAAAAAAANABAAAQAAAAAAAAAOAO//AQAAAAAAAAAOAPD/AQAAAAEAAAAOAPH/AQAAAAMAAAAOAPL/AQAAAAEAAAAOAPP/AQAAAAMAAAAOAPT/AQAAAAEAAAAOAPX/AQAAAAMAAAAOAPb/AQAAAAEAAAAOAPf/AQAAAAMAAAAOAPj/AQAAAAEAAAAOAPn/AQAAAAMAAAAOAPr/AQAAAAEAAAAOAPv/AQAAAAMAAAAOAPz/AQAAAAEAAAAOAP3/AQAAAAMAAAAOAP7/AQAAAAEAAAAOAP//AQAAAAMAAAAOAAAAAQAAAAEAAAAOAAEAAQAAAAMAAAAOAAIAAQAAAAEAAAAOAAMAAQAAAAMAAAAOAAQAAQAAAAEAAAAOAAUAAQAAAAMAAAAOAAYAAQAAAAEAAAAOAAcAAQAAAAMAAAAOAAgAAQAAAAEAAAAOAAkAAQAAAAMAAAAOAAoAAQAAAAEAAAAOAAsAAQAAAAMAAAAOAAwAAQAAAAEAAAAOAA0AAQAAAAMAAAAOAA4AAQAAAAEAAAAOAA8AAQAAAAMAAAAOABAAAQAAAAAAAAAPAO//AQAAAAAAAAAPAPD/AQACAAEAAAAPAPH/AQACAAMAAAAPAPL/AQACAAEAAAAPAPP/AQACAAMAAAAPAPT/AQACAAEAAAAPAPX/AQACAAMAAAAPAPb/AQACAAEAAAAPAPf/AQACAAMAAAAPAPj/AQACAAEAAAAPAPn/AQACAAMAAAAPAPr/AQACAAEAAAAPAPv/AQACAAMAAAAPAPz/AQACAAEAAAAPAP3/AQACAAMAAAAPAP7/AQACAAEAAAAPAP//AQACAAMAAAAPAAAAAQACAAEAAAAPAAEAAQACAAMAAAAPAAIAAQACAAEAAAAPAAMAAQACAAMAAAAPAAQAAQACAAEAAAAPAAUAAQACAAMAAAAPAAYAAQACAAEAAAAPAAcAAQACAAMAAAAPAAgAAQACAAEAAAAPAAkAAQACAAMAAAAPAAoAAQACAAEAAAAPAAsAAQACAAMAAAAPAAwAAQACAAEAAAAPAA0AAQACAAMAAAAPAA4AAQACAAEAAAAPAA8AAQACAAMAAAAPABAAAQAAAAAAAAAQAO//AQAAAAAAAAAQAPD/AQAAAAAAAAAQAPH/AQAAAAAAAAAQAPL/AQAAAAAAAAAQAPP/AQAAAAAAAAAQAPT/AQAAAAAAAAAQAPX/AQAAAAAAAAAQAPb/AQAAAAAAAAAQAPf/AQAAAAAAAAAQAPj/AQAAAAAAAAAQAPn/AQAAAAAAAAAQAPr/AQAAAAAAAAAQAPv/AQAAAAAAAAAQAPz/AQAAAAAAAAAQAP3/AQAAAAAAAAAQAP7/AQAAAAAAAAAQAP//AQAAAAAAAAAQAAAAAQAAAAAAAAAQAAEAAQAAAAAAAAAQAAIAAQAAAAAAAAAQAAMAAQAAAAAAAAAQAAQAAQAAAAAAAAAQAAUAAQAAAAAAAAAQAAYAAQAAAAAAAAAQAAcAAQAAAAAAAAAQAAgAAQAAAAAAAAAQAAkAAQAAAAAAAAAQAAoAAQAAAAAAAAAQAAsAAQAAAAAAAAAQAAwAAQAAAAAAAAAQAA0AAQAAAAAAAAAQAA4AAQAAAAAAAAAQAA8AAQAAAAAAAAAQABAAAQAAAAAAAAA=")
+tile_set = ExtResource("6")
+
+[node name="Goal" parent="." node_paths=PackedStringArray("level") instance=ExtResource("7")]
+position = Vector2(-160, 224)
+level = NodePath("..")
+
+[node name="Gimmicks" type="Node2D" parent="."]
+
+[node name="SandPit" parent="Gimmicks" instance=ExtResource("8")]
+
+[node name="Polygon2D" parent="Gimmicks/SandPit" index="0"]
+polygon = PackedVector2Array(-232, -200, -232, -264, -88, -264, -88, -200)
+
+[node name="Blocks" type="Node2D" parent="."]
+
+[node name="DBlocks" type="Node2D" parent="Blocks"]
+
+[node name="DBlock" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, -176)
+shader = SubResource("ShaderMaterial_7tmkn")
+level = NodePath("../../..")
+
+[node name="DBlock5" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, -144)
+shader = SubResource("ShaderMaterial_7tmkn")
+level = NodePath("../../..")
+
+[node name="DBlock6" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, -112)
+shader = SubResource("ShaderMaterial_7tmkn")
+level = NodePath("../../..")
+
+[node name="DBlock7" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, -80)
+shader = SubResource("ShaderMaterial_7tmkn")
+level = NodePath("../../..")
+
+[node name="DBlock8" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, -48)
+shader = SubResource("ShaderMaterial_7tmkn")
+level = NodePath("../../..")
+
+[node name="DBlock9" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, -16)
+shader = SubResource("ShaderMaterial_7tmkn")
+level = NodePath("../../..")
+
+[node name="DBlock2" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, 176)
+shader = SubResource("ShaderMaterial_ieikj")
+level = NodePath("../../..")
+
+[node name="DBlock10" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, 208)
+shader = SubResource("ShaderMaterial_ieikj")
+level = NodePath("../../..")
+
+[node name="DBlock11" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(-80, 240)
+shader = SubResource("ShaderMaterial_ieikj")
+level = NodePath("../../..")
+
+[node name="DBlock3" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, -240)
+shader = SubResource("ShaderMaterial_8sp8h")
+level = NodePath("../../..")
+
+[node name="DBlock12" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, -208)
+shader = SubResource("ShaderMaterial_8sp8h")
+level = NodePath("../../..")
+
+[node name="DBlock13" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, -176)
+shader = SubResource("ShaderMaterial_8sp8h")
+level = NodePath("../../..")
+
+[node name="DBlock4" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, -16)
+shader = SubResource("ShaderMaterial_anhk6")
+level = NodePath("../../..")
+
+[node name="DBlock14" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, 16)
+shader = SubResource("ShaderMaterial_anhk6")
+level = NodePath("../../..")
+
+[node name="DBlock15" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, 48)
+shader = SubResource("ShaderMaterial_anhk6")
+level = NodePath("../../..")
+
+[node name="DBlock16" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, 80)
+shader = SubResource("ShaderMaterial_anhk6")
+level = NodePath("../../..")
+
+[node name="DBlock17" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, 112)
+shader = SubResource("ShaderMaterial_anhk6")
+level = NodePath("../../..")
+
+[node name="DBlock18" parent="Blocks/DBlocks" node_paths=PackedStringArray("level") instance=ExtResource("9")]
+position = Vector2(80, 144)
+shader = SubResource("ShaderMaterial_anhk6")
+level = NodePath("../../..")
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="Coin" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, 160)
+level = NodePath("../..")
+
+[node name="Coin2" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, 96)
+level = NodePath("../..")
+
+[node name="Coin3" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, 32)
+level = NodePath("../..")
+
+[node name="Coin4" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, -32)
+level = NodePath("../..")
+
+[node name="Coin5" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, -96)
+level = NodePath("../..")
+
+[node name="Coin6" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, -160)
+level = NodePath("../..")
+
+[node name="Coin7" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(160, -224)
+level = NodePath("../..")
+
+[node name="Coin8" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, -224)
+level = NodePath("../..")
+
+[node name="Coin9" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, -160)
+level = NodePath("../..")
+
+[node name="Coin10" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, -96)
+level = NodePath("../..")
+
+[node name="Coin11" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, -32)
+level = NodePath("../..")
+
+[node name="Coin12" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, 32)
+level = NodePath("../..")
+
+[node name="Coin13" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, 96)
+level = NodePath("../..")
+
+[node name="Coin14" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, 160)
+level = NodePath("../..")
+
+[node name="Coin15" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(0, 224)
+level = NodePath("../..")
+
+[node name="Coin17" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(-160, -160)
+level = NodePath("../..")
+
+[node name="Coin18" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(-160, -96)
+level = NodePath("../..")
+
+[node name="Coin19" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(-160, -32)
+level = NodePath("../..")
+
+[node name="Coin20" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(-160, 32)
+level = NodePath("../..")
+
+[node name="Coin21" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(-160, 96)
+level = NodePath("../..")
+
+[node name="Coin22" parent="Collectibles" node_paths=PackedStringArray("level") instance=ExtResource("10")]
+position = Vector2(-160, 160)
+level = NodePath("../..")
+
+[node name="Baddies" type="Node2D" parent="."]
+
+[node name="Player" type="Node2D" parent="."]
+
+[node name="Player" parent="Player" instance=ExtResource("11")]
+position = Vector2(160, 216)
+
+[node name="Uncannies" type="Node2D" parent="."]
+
+[node name="Ghost" parent="Uncannies" node_paths=PackedStringArray("target") instance=ExtResource("12")]
+z_index = 1
+position = Vector2(-240, -240)
+target = NodePath("../../Player/Player")
+
+[node name="WinConfetti" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_jjwux")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+visible = false
+z_index = 1
+color = Color(0.295833, 0.255, 0.5, 0.0392157)
+polygon = PackedVector2Array(-256, -256, 256, -256, 256, 256, -256, 256)
+
+[node name="LevelHUD" parent="." node_paths=PackedStringArray("level") instance=ExtResource("14")]
+level = NodePath("..")
+
+[editable path="Gimmicks/SandPit"]

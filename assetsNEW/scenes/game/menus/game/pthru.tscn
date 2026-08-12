@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://c1c5xbmwfgw1t"]
+
+[ext_resource type="Script" uid="uid://btdc8pyj1ndnm" path="res://assetsNEW/scenes/game/menus/game/pthru.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://btldeni7oupaw" path="res://assetsNEW/scenes/HUD/pthru_hud.tscn" id="2"]
+[ext_resource type="AudioStream" uid="uid://dyitabbdpeabg" path="res://assetsNEW/sounds/game/skip.ogg" id="3"]
+
+[node name="PThru" type="Node2D"]
+script = ExtResource("1")
+world_peak_unlocks = Dictionary[StringName, int]({
+&"costume_cannydigo": 5,
+&"costume_copycat": 0,
+&"costume_dog": 3,
+&"costume_ms_canny": 1,
+&"costume_rainbow": 6,
+&"costume_retro": 2,
+&"costume_veteran": 4,
+&"extra_catartist": 0
+})
+
+[node name="PthruHUD" parent="." instance=ExtResource("2")]
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="skip" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("3")
+bus = &"Sound"
