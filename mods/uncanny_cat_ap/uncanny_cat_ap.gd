@@ -295,31 +295,8 @@ func _on_ap_roominfo(conn: ConnectionInfo, _json: Dictionary) -> void :
 
 func _on_ap_connected(conn: ConnectionInfo, _json: Dictionary) -> void :
 	# Handle AP items received here
-	conn.obtained_items.connect(func(_items: Array[NetworkItem]):
-		var total: = conn.received_items.size()
-		while Master.save_data.ap_item_index < total:
-			var item: = conn.received_items[Master.save_data.ap_item_index]
-			Master.save_data.ap_item_index += 1
-			if item == null:
-				continue
+	conn.obtained_items.connect(func(_items: Array[NetworkItem]): receive_ap_items())
 
-			if ITEM_ID_TO_KEYS.has(item.id):
-				var item_key: String = ITEM_ID_TO_KEYS[item.id]
-				if item.id >= BASE_ID + MODIFIER_ITEM_OFFSET and item.id < BASE_ID + MODIFIER_ITEM_OFFSET + 1000:
-					var qty_key: = StringName(item_key + "_qty")
-					Master.save_data.ap_mod_qty[qty_key] = Master.save_data.ap_mod_qty.get(qty_key, 0) + 1
-				else:
-					Master.current.award_unlock(item_key)
-			
-		Master.save_data.write_save()
-
-		sync_ap_mods()
-		refresh_gimmick_row()
-		if is_instance_valid(level_select):
-			apply_ap_locks(level_select)
-			open_presents_now()
-	)
-	
 	refresh_gimmick_row()
 
 	APConnectionMemory.store(conn.seed_name)
@@ -442,6 +419,7 @@ func sync_ap_mods() -> void :
 		Master.current.update_mods(pthru.modifiers)
 
 var _opening_presents: = false
+var _receiving_items: = false
 
 func _present_window_open() -> bool :
 	if not is_instance_valid(Master.current):
@@ -449,39 +427,47 @@ func _present_window_open() -> bool :
 	var eater: = Master.current.get_node_or_null(^"HUDMods/InputEater") as CanvasItem
 	return eater != null and eater.visible
 
-## True if anything is waiting, on the HUD or dropped from a finished sequence.
-func _presents_waiting() -> bool :
-	if not is_instance_valid(Master.current) or Master.save_data == null:
-		return false
-	return not Master.current.unopened_presents.is_empty() or not Master.save_data.pending_unlocks.is_empty()
+func receive_ap_items() -> void :
+	if _receiving_items or not ap_active():
+		return
+	_receiving_items = true
+	while _present_window_open():
+		await get_tree().process_frame
+		if not ap_active() or not is_instance_valid(Master.current):
+			_receiving_items = false
+			return
 
-func _requeue_dropped_presents() -> void :
-	if not is_instance_valid(Master.current) or Master.save_data == null:
-		return
-	if not Master.current.unopened_presents.is_empty():
-		return
-	if Master.save_data.pending_unlocks.is_empty():
-		return
-	Master.current.restore_presents()
+	var conn: = AP.inst.conn
+	while Master.save_data.ap_item_index < conn.received_items.size():
+		var item: = conn.received_items[Master.save_data.ap_item_index]
+		Master.save_data.ap_item_index += 1
+		if item == null:
+			continue
+
+		if ITEM_ID_TO_KEYS.has(item.id):
+			var item_key: String = ITEM_ID_TO_KEYS[item.id]
+			if item.id >= BASE_ID + MODIFIER_ITEM_OFFSET and item.id < BASE_ID + MODIFIER_ITEM_OFFSET + 1000:
+				var qty_key: = StringName(item_key + "_qty")
+				Master.save_data.ap_mod_qty[qty_key] = Master.save_data.ap_mod_qty.get(qty_key, 0) + 1
+			else:
+				Master.current.award_unlock(item_key)
+
+	Master.save_data.write_save()
+
+	sync_ap_mods()
+	refresh_gimmick_row()
+	if is_instance_valid(level_select):
+		apply_ap_locks(level_select)
+		open_presents_now()
+	_receiving_items = false
 
 func open_presents_now() -> void :
 	if not ap_active() or not is_instance_valid(Master.current):
 		return
-	if _opening_presents or not _presents_waiting():
+	if _opening_presents or Master.current.unopened_presents.is_empty():
 		return
 	_opening_presents = true
-	while true:
-		while _present_window_open():
-			await get_tree().process_frame
-			if not ap_active() or not is_instance_valid(Master.current):
-				_opening_presents = false
-				return
-		_requeue_dropped_presents()
-		if Master.current.unopened_presents.is_empty():
-			break
-		await Master.current.open_presents()
-		if not is_instance_valid(Master.current):
-			break
+	await Master.current.open_presents()
 	_opening_presents = false
 
 #endregion SAVE DATA
