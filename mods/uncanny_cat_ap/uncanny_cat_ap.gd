@@ -443,17 +443,46 @@ func sync_ap_mods() -> void :
 
 var _opening_presents: = false
 
+func _present_window_open() -> bool :
+	if not is_instance_valid(Master.current):
+		return false
+	var eater: = Master.current.get_node_or_null(^"HUDMods/InputEater") as CanvasItem
+	return eater != null and eater.visible
+
+## True if anything is waiting, on the HUD or dropped from a finished sequence.
+func _presents_waiting() -> bool :
+	if not is_instance_valid(Master.current) or Master.save_data == null:
+		return false
+	return not Master.current.unopened_presents.is_empty() or not Master.save_data.pending_unlocks.is_empty()
+
+func _requeue_dropped_presents() -> void :
+	if not is_instance_valid(Master.current) or Master.save_data == null:
+		return
+	if not Master.current.unopened_presents.is_empty():
+		return
+	if Master.save_data.pending_unlocks.is_empty():
+		return
+	Master.current.restore_presents()
+
 func open_presents_now() -> void :
 	if not ap_active() or not is_instance_valid(Master.current):
 		return
-	if _opening_presents or Master.current.unopened_presents.is_empty():
+	if _opening_presents or not _presents_waiting():
 		return
 	_opening_presents = true
-	await Master.current.open_presents()
+	while true:
+		while _present_window_open():
+			await get_tree().process_frame
+			if not ap_active() or not is_instance_valid(Master.current):
+				_opening_presents = false
+				return
+		_requeue_dropped_presents()
+		if Master.current.unopened_presents.is_empty():
+			break
+		await Master.current.open_presents()
+		if not is_instance_valid(Master.current):
+			break
 	_opening_presents = false
-	# Anything that arrived while the overlay was up
-	if not Master.current.unopened_presents.is_empty():
-		open_presents_now()
 
 #endregion SAVE DATA
 
@@ -652,10 +681,11 @@ func _on_any_node_added(node: Node):
 
 	if node is Collectible:
 		if node.does_speed:
-			if node.set_speed == 0.0 and not has_gimmick(&"ap_stop"):
-				node.set_deferred("monitoring", false)
-				node.modulate = Color.RED
-			elif not has_gimmick(&"ap_go") and node is not Key:
+			if node.set_speed == 0.0:
+				if not has_gimmick(&"ap_stop"):
+					node.set_deferred("monitoring", false)
+					node.modulate = Color.RED
+			elif node is not Key and not has_gimmick(&"ap_go"):
 				node.set_deferred("monitoring", false)
 				node.modulate = Color.RED
 
@@ -713,7 +743,7 @@ func _on_any_node_added(node: Node):
 
 	if node is MeowlLevel:
 		node.score_changed.connect(func(value: int):
-			send_minigame_checks(MEOWLS_OFFSET, 10, value)
+			send_minigame_checks(MEOWLS_OFFSET, 10000, value)
 		)
 
 func _PThru_start(node: PThru):
