@@ -16,12 +16,15 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 
-# --- Decompiled base game ---
+# Other ignores
+.DS_Store
+
+# Base game files
 assetsNEW/**
 !assetsNEW/**/
 ucg_tv_test/**
 
-# Base-game files this mod edits (keep tracked):
+# Base-game files edits (keep tracked):
 !assetsNEW/graphics/minigames/bartbash/borttheme.tres
 !assetsNEW/scenes/HUD/thought_displayer.tscn
 !assetsNEW/scenes/game/levels/endless/E_00.tscn
