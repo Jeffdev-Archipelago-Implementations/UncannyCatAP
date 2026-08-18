@@ -22,10 +22,6 @@ static func open(slot_name: String) -> APPthruData:
 	pthru.pthru_name = "Archipelago"
 	pthru.player_name = slot_name
 
-	var slot: Dictionary = AP.inst.conn.slot_data
-	pthru.modifiers.mods["easy_mode"] = bool(int(slot.get("chill_mode", 0)))
-	pthru.modifiers.mods["hard_mode"] = bool(int(slot.get("panic_mode", 0)))
-
 	pthru.save_to_file()
 
 	existing.clear()

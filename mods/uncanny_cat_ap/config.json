@@ -23,6 +23,32 @@
 			"step": 1,
 		}
 	},
+	"chill_mode": {
+		"default": 0,
+		"name": "Chill Mode",
+		"description": "Enables Chill Mode, which prevents the Uncanny Cat from spawning. A much chiller, easier experience.",
+		"type_hint": {
+			"id": "option_picker",
+			"options": [
+				"Use Yaml Setting",
+				"Force Enable",
+				"Force Disable"
+			]
+		}
+	},
+	"panic_mode": {
+		"default": 0,
+		"name": "Panic Mode",
+		"description": "Enables Panic Mode, which significantly speeds up the Uncanny Cat. This can be extremely difficult!",
+		"type_hint": {
+			"id": "option_picker",
+			"options": [
+				"Use Yaml Setting",
+				"Force Enable",
+				"Force Disable"
+			]
+		}
+	},
 	"show_ap_msgs": {
 		"name": "Display Archipelago Messages",
 		"description": "Display Archipelago messages at the top of the screen.",

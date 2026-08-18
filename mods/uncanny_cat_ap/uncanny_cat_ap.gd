@@ -16,6 +16,8 @@ const CONFIG_PATH = "user://mod_data/configs/jeffdev.uncannycatap.json"
 const CONFIG_DEFAULTS = {
 	"deathlink": 0,
 	"deathlink_amnesty": 5,
+	"chill_mode": 0,
+	"panic_mode": 0,
 	"show_ap_msgs": true,
 	"ap_msg_queue_time": 3,
 }
@@ -257,20 +259,33 @@ func load_config() -> void :
 		config.merge(saved, true)
 
 func _config_option_value_changed(mod: ModLoader.Mod, id: String, value: Variant):
-	print(mod.id)
-	if mod.id == "jeffdev.uncannycatap":
-		if id == "deathlink" and ap_active():
-			if value == 0:
-				AP.inst.set_deathlink(AP.inst.conn.slot_data.get("deathlink", false))
-			elif value == 1:
-				AP.inst.set_deathlink(true)
-			else:
-				AP.inst.set_deathlink(false)
-		print("Changing config!")
-		config[id] = value
-		print(config)
-		if id in ["deathlink", "deathlink_amnesty"]:
+	if mod.id != "jeffdev.uncannycatap":
+		return
+	config[id] = value
+	print("AP: config '%s' is now %s" % [id, value])
+	match id:
+		"deathlink":
+			if ap_active():
+				AP.inst.set_deathlink(config_toggle("deathlink", "deathlink"))
 			refresh_amnesty_counter()
+		"deathlink_amnesty":
+			refresh_amnesty_counter()
+		"chill_mode", "panic_mode":
+			sync_ap_mods()
+
+func config_toggle(id: String, slot_key: String) -> bool :
+	match int(config.get(id, 0)):
+		1: return true
+		2: return false
+	if not ap_active():
+		return false
+	return bool(int(AP.inst.conn.slot_data.get(slot_key, 0)))
+
+func chill_mode() -> bool :
+	return config_toggle("chill_mode", "chill_mode")
+
+func panic_mode() -> bool :
+	return config_toggle("panic_mode", "panic_mode")
 
 func _register_scene(master: Master, path: String) -> int:
 	var id: = master.game_scene_paths.find(path)
@@ -299,12 +314,7 @@ func _on_ap_connected(conn: ConnectionInfo, _json: Dictionary) -> void :
 
 	APConnectionMemory.store(conn.seed_name)
 	load_ap_state()
-	if config["deathlink"] == 0:
-		AP.inst.set_deathlink(AP.inst.conn.slot_data.get("deathlink", false))
-	elif config["deathlink"] == 1:
-		AP.inst.set_deathlink(true)
-	else:
-		AP.inst.set_deathlink(false)
+	AP.inst.set_deathlink(config_toggle("deathlink", "deathlink"))
 	conn.deathlink.connect(_on_deathlink_received)
 	refresh_amnesty_counter()
 
@@ -339,7 +349,10 @@ func _on_ap_printjson(json: Dictionary, plaintext: String):
 ## Opens this room's pthru run.
 func load_ap_state() -> void :
 	var creds: APCredentials = AP.inst.creds
-	APPthruData.open(creds.slot)
+	var pthru: = APPthruData.open(creds.slot)
+	if pthru:
+		apply_ap_modes(pthru)
+		pthru.save_to_file()
 	print("AP: state loaded")
 
 func ap_active() -> bool :
@@ -393,6 +406,12 @@ func _reload_profile() -> void :
 		Master.save_data.current_costume = &"canny"
 		Master.save_data.write_save()
 
+func apply_ap_modes(pthru: PthruData) -> void :
+	if pthru.modifiers == null:
+		pthru.modifiers = Modifiers.new()
+	pthru.modifiers.mods["easy_mode"] = chill_mode()
+	pthru.modifiers.mods["hard_mode"] = panic_mode()
+
 # MODIFIERS, not mods, to be clear
 func sync_ap_mods() -> void :
 	if not ap_active():
@@ -403,6 +422,7 @@ func sync_ap_mods() -> void :
 	if pthru.modifiers == null:
 		pthru.modifiers = Modifiers.new()
 	pthru.modifier_check()
+	apply_ap_modes(pthru)
 
 	for qty_key in Master.save_data.ap_mod_qty:
 		var mod_name: = String(qty_key).trim_prefix("mod_").trim_suffix("_qty")
