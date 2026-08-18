@@ -1,6 +1,6 @@
 {
 	"id": "jeffdev.uncannycatap",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"name": "Uncanny Cat Archipelago",
 	"author": "Jeffdev",
 	"description": "An Archipelago implementation for Uncanny Cat Golf!\nRequires an external APWorld to use, see the Github.",

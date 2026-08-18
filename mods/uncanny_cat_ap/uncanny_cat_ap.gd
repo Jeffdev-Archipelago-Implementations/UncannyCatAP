@@ -5,8 +5,6 @@ const AP_AUTOLOAD_PATH = "res://godot_ap/autoloads/archipelago.tscn"
 const AP_TITLE_SCREEN = preload("res://mods/uncanny_cat_ap/ap_title_screen.gd")
 ## Script override for breakable blocks
 const AP_BLOCK = preload("res://mods/uncanny_cat_ap/ap_block.gd")
-
-## Each room gets its own copy of the vanilla save layout under here.
 const AP_SAVES_DIR = "user://ap_saves/"
 const VANILLA_SAVE_PATH = "user://save_data.ini"
 const VANILLA_PTHRUS_DIR = "user://pthrus/"
@@ -755,6 +753,24 @@ func _PThru_on_child_added(node: Node):
 		if not has_ap_item(level_item) and not has_ap_item(world_item) and not lvl_world == 0 and not is_goal_level(lvl_world, lvl_idx):
 			_kick_to_level_select(lvl_world, lvl_idx)
 			return
+		if is_goal_level(lvl_world, lvl_idx) and not Master.game_data.current_pthru.total_prisms >= AP.inst.conn.slot_data.get("prism_unlock_amount", 200):
+			_kick_to_level_select(lvl_world, lvl_idx)
+			return
+
+		# Handle transitioning to out of bounds endless level because this is a weird custom world lol
+		var pthru: = PThru.current
+		if lvl_world == 7 and lvl_idx >= Master.game_data.worlds[7].total_levels() - 1:
+			if lvl.progress.is_connected(pthru.level_switch):
+				lvl.progress.disconnect(pthru.level_switch)
+			lvl.progress.connect(func(trans_mode: int):
+				if trans_mode not in [PThru.LEVEL_TRANSITION.NORMAL, PThru.LEVEL_TRANSITION.SKIP]:
+					pthru.level_switch(trans_mode) 
+					return
+				if trans_mode == PThru.LEVEL_TRANSITION.NORMAL:
+					pthru.write_level_data(lvl_world, lvl_idx, lvl.hideScoring)
+				pthru.master.thinker.visible = true
+				_kick_to_level_select(lvl_world, lvl_idx)
+			)
 
 		last_world = lvl_world
 		last_level = lvl_idx
