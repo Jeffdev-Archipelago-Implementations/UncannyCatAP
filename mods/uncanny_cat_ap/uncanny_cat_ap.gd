@@ -287,6 +287,14 @@ func chill_mode() -> bool :
 func panic_mode() -> bool :
 	return config_toggle("panic_mode", "panic_mode")
 
+## TESTING VALUE, SET TO -1 FOR SLOT DATA
+const DEBUG_PRISM_UNLOCK_AMOUNT: int = -1
+
+func prism_unlock_amount() -> int :
+	if DEBUG_PRISM_UNLOCK_AMOUNT >= 0:
+		return DEBUG_PRISM_UNLOCK_AMOUNT
+	return int(AP.inst.conn.slot_data.get("prism_unlock_amount", 200))
+
 func _register_scene(master: Master, path: String) -> int:
 	var id: = master.game_scene_paths.find(path)
 	if id != -1:
@@ -343,7 +351,7 @@ func _confirm_ap_drop() -> void :
 	if Master.current:
 		Master.current.switch_scene(Master.GameScenes.TITLE)
 
-func _on_ap_printjson(json: Dictionary, plaintext: String):
+func _on_ap_printjson(json: Dictionary, _plaintext: String):
 	print(json)
 
 ## Opens this room's pthru run.
@@ -580,7 +588,7 @@ func ap_check_summary(world: int, level_idx: int) -> String :
 
 func _on_child_added(node: Node):
 	if node is GameLoader:
-		var cooler_mods_node = get_tree().root.get_node("ModLoader/justsomejello_coolermods")
+		cooler_mods_node = get_tree().root.get_node("ModLoader/justsomejello_coolermods")
 		if cooler_mods_node:
 			cooler_mods_node.connect("config_option_value_changed", _config_option_value_changed)
 	if node.name == "PThru":
@@ -590,7 +598,7 @@ func _on_child_added(node: Node):
 				node.pthru_HUD.tprism_text.position = Vector2(180, 144)
 				var prism: AnimatedSprite2D = node.pthru_HUD.get_node("Prism")
 				prism.position = Vector2(165, 152)
-				node.pthru_HUD.tprism_text.text = str(Master.game_data.current_pthru.total_prisms) + " / %s" % int(AP.inst.conn.slot_data.get("prism_unlock_amount"))
+				node.pthru_HUD.tprism_text.text = str(Master.game_data.current_pthru.total_prisms) + " / %s" % prism_unlock_amount()
 				build_amnesty_counter(node.pthru_HUD)
 		)
 	if node.name == "TitleScreen" and node is Menu:
@@ -610,7 +618,7 @@ func _on_child_added(node: Node):
 				node.pthru_HUD.tprism_text.position = Vector2(180, 144)
 				var prism: AnimatedSprite2D = node.pthru_HUD.get_node("Prism")
 				prism.position = Vector2(165, 152)
-				node.pthru_HUD.tprism_text.text = str(Master.game_data.current_pthru.total_prisms) + " / %s" % int(AP.inst.conn.slot_data.get("prism_unlock_amount"))
+				node.pthru_HUD.tprism_text.text = str(Master.game_data.current_pthru.total_prisms) + " / %s" % prism_unlock_amount()
 				
 				build_gimmick_row(node.pthru_HUD)
 				build_amnesty_counter(node.pthru_HUD)
@@ -626,7 +634,6 @@ func _on_any_node_added(node: Node):
 
 	if node is SmileyRing:
 		var ring := node as SmileyRing
-		print(ring.color.to_html(false))
 		(ring.get_node("win") as AudioStreamPlayer).finished.connect(
 			func():
 				if not ap_active():
@@ -773,7 +780,7 @@ func _PThru_on_child_added(node: Node):
 		if not has_ap_item(level_item) and not has_ap_item(world_item) and not lvl_world == 0 and not is_goal_level(lvl_world, lvl_idx):
 			_kick_to_level_select(lvl_world, lvl_idx)
 			return
-		if is_goal_level(lvl_world, lvl_idx) and not Master.game_data.current_pthru.total_prisms >= AP.inst.conn.slot_data.get("prism_unlock_amount", 200):
+		if is_goal_level(lvl_world, lvl_idx) and not Master.game_data.current_pthru.total_prisms >= prism_unlock_amount():
 			_kick_to_level_select(lvl_world, lvl_idx)
 			return
 
@@ -799,9 +806,8 @@ func _PThru_on_child_added(node: Node):
 			if lvl.mode == lvl.MODES.NORMAL and ap_active():
 				if trans_mode in [PThru.LEVEL_TRANSITION.NORMAL, PThru.LEVEL_TRANSITION.WIN_RESET, PThru.LEVEL_TRANSITION.GOLDEN_TEE]:
 					# Check for goal
-					if Master.game_data.current_pthru.total_prisms >= AP.inst.conn.slot_data.get("prism_unlock_amount", 200):
-						if is_goal_level(lvl_world, lvl_idx):
-							AP.inst.set_client_status(AP.inst.ClientStatus.CLIENT_GOAL)
+					if Master.game_data.current_pthru.total_prisms >= prism_unlock_amount() and is_goal_level(lvl_world, lvl_idx):
+						AP.inst.set_client_status(AP.inst.ClientStatus.CLIENT_GOAL)
 					else:
 						# Check for peak
 						var complete_loc_id: int = BASE_ID + (100 * lvl_world) + lvl_idx
@@ -905,7 +911,7 @@ func ap_level_locked(world: int, level: int) -> bool :
 	# World 0 is always playable
 	if world == 0 or not ap_active():
 		return false
-	if Master.game_data.current_pthru.total_prisms >= AP.inst.conn.slot_data.get("prism_unlock_amount", 200):
+	if Master.game_data.current_pthru.total_prisms >= prism_unlock_amount():
 		if is_goal_level(world, level):
 			return false
 	return not has_ap_item(BASE_ID + (100 * world) + level) \
@@ -1166,7 +1172,7 @@ func handle_deathlink_amnesty() -> bool :
 	refresh_amnesty_counter()
 	return send
 
-func _on_deathlink_received(source: String, cause: String, _json: Dictionary) -> void:
+func _on_deathlink_received(_source: String, _cause: String, _json: Dictionary) -> void:
 	var pthru := PThru.current
 	if not pthru or not is_instance_valid(pthru.current_level):
 		return 
