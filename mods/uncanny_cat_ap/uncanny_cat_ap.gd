@@ -5,11 +5,15 @@ const AP_AUTOLOAD_PATH = "res://godot_ap/autoloads/archipelago.tscn"
 const AP_TITLE_SCREEN = preload("res://mods/uncanny_cat_ap/ap_title_screen.gd")
 ## Script override for breakable blocks
 const AP_BLOCK = preload("res://mods/uncanny_cat_ap/ap_block.gd")
+const EASY_MODE_ENDING = preload("res://assetsNEW/scenes/objects/misc/easy_mode_ending.gd")
 const AP_SAVES_DIR = "user://ap_saves/"
 const VANILLA_SAVE_PATH = "user://save_data.ini"
 const VANILLA_PTHRUS_DIR = "user://pthrus/"
 
 const AP_DROP_GRACE = 1.0
+
+const COIN_IDS_PATH = "res://mods/uncanny_cat_ap/coin_ids.json"
+var coin_ids: Dictionary = {}
 
 ## COOLER MODS CONFIG
 const CONFIG_PATH = "user://mod_data/configs/jeffdev.uncannycatap.json"
@@ -33,6 +37,7 @@ const GOOD_OFFSET = 3000
 const BORT_OFFSET = 5000
 const MEOWLS_OFFSET = 6000
 const DASH_OFFSET = 7000
+const ALL_COIN_OFFSET = 8000
 
 # ITEM OFFSETS
 const WORLD_ITEM_OFFSET = 1000
@@ -40,6 +45,9 @@ const GIMMICK_ITEM_OFFSET = 2000
 const MODIFIER_ITEM_OFFSET = 3000
 const VILLA_ITEM_OFFSET = 4000
 const COSTUME_ITEM_OFFSET = 5000
+
+## Cannium Prism, only in the pool with the macguffin goal
+const MACGUFFIN_ITEM_ID = BASE_ID + 6000
 
 const GIMMICK_ITEM_IDS: Dictionary[String, int] = {
 	"Breakable Tiles": BASE_ID + 2000,
@@ -151,11 +159,13 @@ const AMNESTY_LABEL_NAME = &"APDeathlinkAmnesty"
 const AMNESTY_LABEL_RECT = Rect2(132, 163, 127, 20)
 const AMNESTY_LABEL_COLOR = Color(1, 0.35, 0.458334)
 var amnesty_labels: Array[Label] = []
+var prism_labels: Array[Label] = []
 
 ## The 'goal_level' slot option, as [world, 1-based level] per choice.
 const GOAL_LEVELS: Array[Vector2i] = [
 	Vector2i(3, 18),
 	Vector2i(4, 17),
+	Vector2i(4, 18),
 	Vector2i(5, 18),
 	Vector2i(6, 17),
 ]
@@ -231,6 +241,7 @@ func _ready() -> void :
 	print("AP: post-initialization")
 
 	load_config()
+	load_coin_ids()
 	if config["show_ap_msgs"]:
 		_create_banner()
 	add_translations()
@@ -257,6 +268,22 @@ func load_config() -> void :
 	var saved: Variant = JSON.parse_string(file.get_as_text())
 	if saved is Dictionary:
 		config.merge(saved, true)
+
+func load_coin_ids() -> void :
+	var file: = FileAccess.open(COIN_IDS_PATH, FileAccess.READ)
+	if not file:
+		push_error("AP: could not open %s" % COIN_IDS_PATH)
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if parsed is Dictionary:
+		coin_ids = parsed
+
+## Returns -1 if the coin has no location
+func coin_location_id(level_id: String, coin_path: String) -> int :
+	var entry: Variant = coin_ids.get(level_id, {}).get(coin_path)
+	if entry is Dictionary and entry.has("id"):
+		return int(entry["id"]) # JSON numbers parse as floats
+	return -1
 
 func _config_option_value_changed(mod: ModLoader.Mod, id: String, value: Variant):
 	if mod.id != "jeffdev.uncannycatap":
@@ -290,10 +317,19 @@ func panic_mode() -> bool :
 ## TESTING VALUE, SET TO -1 FOR SLOT DATA
 const DEBUG_PRISM_UNLOCK_AMOUNT: int = -1
 
+func prism_current_amount() -> int:
+	if not ap_active():
+		return Master.game_data.current_pthru.total_prisms
+	if AP.inst.conn.slot_data.get("macguffin_goal", 0) == 0:
+		return Master.game_data.current_pthru.total_prisms
+	return ap_item_count(MACGUFFIN_ITEM_ID)
+
 func prism_unlock_amount() -> int :
 	if DEBUG_PRISM_UNLOCK_AMOUNT >= 0:
 		return DEBUG_PRISM_UNLOCK_AMOUNT
-	return int(AP.inst.conn.slot_data.get("prism_unlock_amount", 200))
+	if AP.inst.conn.slot_data.get("macguffin_goal", 0) == 0:
+		return int(AP.inst.conn.slot_data.get("prism_unlock_amount", 200))
+	return int(AP.inst.conn.slot_data.get("macguffin_required", 40))
 
 func _register_scene(master: Master, path: String) -> int:
 	var id: = master.game_scene_paths.find(path)
@@ -316,7 +352,10 @@ func _on_ap_roominfo(conn: ConnectionInfo, _json: Dictionary) -> void :
 
 func _on_ap_connected(conn: ConnectionInfo, _json: Dictionary) -> void :
 	# Handle AP items received here
-	conn.obtained_items.connect(func(_items: Array[NetworkItem]): receive_ap_items())
+	conn.obtained_items.connect(func(_items: Array[NetworkItem]):
+		refresh_prism_counter()
+		receive_ap_items()
+	)
 
 	refresh_gimmick_row()
 
@@ -374,6 +413,15 @@ func has_ap_item(item_id: int) -> bool :
 		if item.id == item_id:
 			has = true
 	return has
+
+func ap_item_count(item_id: int) -> int :
+	if not ap_active():
+		return 0
+	var count: = 0
+	for item in AP.inst.conn.received_items:
+		if item.id == item_id:
+			count += 1
+	return count
 
 #endregion AP CONNECTION
 
@@ -595,10 +643,7 @@ func _on_child_added(node: Node):
 		_PThru_start(node)
 		node.ready.connect(func():
 			if ap_active():
-				node.pthru_HUD.tprism_text.position = Vector2(180, 144)
-				var prism: AnimatedSprite2D = node.pthru_HUD.get_node("Prism")
-				prism.position = Vector2(165, 152)
-				node.pthru_HUD.tprism_text.text = str(Master.game_data.current_pthru.total_prisms) + " / %s" % prism_unlock_amount()
+				build_prism_counter(node.pthru_HUD)
 				build_amnesty_counter(node.pthru_HUD)
 		)
 	if node.name == "TitleScreen" and node is Menu:
@@ -615,11 +660,7 @@ func _on_child_added(node: Node):
 		node.ready.connect(hook_level_stats.bind(node))
 		node.ready.connect(func():
 			if ap_active():
-				node.pthru_HUD.tprism_text.position = Vector2(180, 144)
-				var prism: AnimatedSprite2D = node.pthru_HUD.get_node("Prism")
-				prism.position = Vector2(165, 152)
-				node.pthru_HUD.tprism_text.text = str(Master.game_data.current_pthru.total_prisms) + " / %s" % prism_unlock_amount()
-				
+				build_prism_counter(node.pthru_HUD)
 				build_gimmick_row(node.pthru_HUD)
 				build_amnesty_counter(node.pthru_HUD)
 
@@ -700,6 +741,24 @@ func _on_any_node_added(node: Node):
 				node.set_deferred("monitoring", false)
 				node.modulate = Color.RED
 
+		# Coins
+		if node.coin_multiply and not node.scene_file_path.ends_with("coaster_coin.tscn"):
+			node.ready.connect(func():
+				var coin_path: = str(node.level.get_path_to(node))
+				var loc: = coin_location_id(node.level.ID, coin_path)
+				if loc < 0:
+					print("AP: no coin location for %s/%s" % [node.level.ID, coin_path])
+					return
+				elif not AP.inst.location_checked(loc):
+					node.modulate = Color.GREEN
+
+				node.collected.connect(func():
+					if ap_active() and AP.inst.location_exists(loc) and not AP.inst.location_checked(loc):
+						print("AP: coin %s/%s collected, sending %d" % [node.level.ID, coin_path, loc])
+						AP.inst.collect_location(loc)
+				, CONNECT_ONE_SHOT)
+			, CONNECT_ONE_SHOT)
+
 	if node is Key and not has_gimmick(&"ap_keys"):
 		node.set_deferred("monitoring", false)
 		node.modulate = Color.RED
@@ -739,6 +798,14 @@ func _on_any_node_added(node: Node):
 	# Force disable prism gates as they aren't relevant for AP
 	if node is PrismGate:
 		node.prism_number = 0
+		
+	# Force remove easy mode ending things
+	if node.get_script() == EASY_MODE_ENDING:
+		var to_add: Array = node.objects_to_add.duplicate()
+		node.set_script(null) # before its _ready runs
+		for obj in to_add:
+			if is_instance_valid(obj):
+				obj.queue_free()
 
 
 	# Minigames
@@ -780,7 +847,7 @@ func _PThru_on_child_added(node: Node):
 		if not has_ap_item(level_item) and not has_ap_item(world_item) and not lvl_world == 0 and not is_goal_level(lvl_world, lvl_idx):
 			_kick_to_level_select(lvl_world, lvl_idx)
 			return
-		if is_goal_level(lvl_world, lvl_idx) and not Master.game_data.current_pthru.total_prisms >= prism_unlock_amount():
+		if is_goal_level(lvl_world, lvl_idx) and not prism_current_amount() >= prism_unlock_amount():
 			_kick_to_level_select(lvl_world, lvl_idx)
 			return
 
@@ -799,6 +866,23 @@ func _PThru_on_child_added(node: Node):
 				_kick_to_level_select(lvl_world, lvl_idx)
 			)
 
+		# Beating the goal level goes straight to the final results instead of the next level
+		if is_goal_level(lvl_world, lvl_idx):
+			if lvl.progress.is_connected(pthru.level_switch):
+				lvl.progress.disconnect(pthru.level_switch)
+			lvl.progress.connect(func(trans_mode: int):
+				var peak_hunter_click: bool = trans_mode == PThru.LEVEL_TRANSITION.WIN_RESET \
+					and Input.is_action_just_pressed(&"Click") and not Input.is_action_just_pressed(&"Restart")
+				if trans_mode != PThru.LEVEL_TRANSITION.NORMAL and not peak_hunter_click:
+					pthru.level_switch(trans_mode)
+					return
+				pthru.write_level_data(lvl_world, lvl_idx, lvl.hideScoring)
+				pthru.master.thinker.visible = true
+				lvl.queue_free()
+				pthru.overlay.emit(Master.GameScenes.FINAL_RESULTS)
+				pthru.play_music.emit(Master.Music.NONE, 1.0)
+			)
+
 		last_world = lvl_world
 		last_level = lvl_idx
 
@@ -806,7 +890,7 @@ func _PThru_on_child_added(node: Node):
 			if lvl.mode == lvl.MODES.NORMAL and ap_active():
 				if trans_mode in [PThru.LEVEL_TRANSITION.NORMAL, PThru.LEVEL_TRANSITION.WIN_RESET, PThru.LEVEL_TRANSITION.GOLDEN_TEE]:
 					# Check for goal
-					if Master.game_data.current_pthru.total_prisms >= prism_unlock_amount() and is_goal_level(lvl_world, lvl_idx):
+					if prism_current_amount() >= prism_unlock_amount() and is_goal_level(lvl_world, lvl_idx):
 						AP.inst.set_client_status(AP.inst.ClientStatus.CLIENT_GOAL)
 					else:
 						# Check for peak
@@ -829,7 +913,8 @@ func _PThru_on_child_added(node: Node):
 						if Master.save_data.ap_mod_qty[mod] > 0:
 							Master.save_data.ap_mod_qty[mod] -= 1
 					sync_ap_mods()
-				
+
+			refresh_prism_counter()
 		)
 
 		const DEATH_MESSAGES := {
@@ -911,7 +996,7 @@ func ap_level_locked(world: int, level: int) -> bool :
 	# World 0 is always playable
 	if world == 0 or not ap_active():
 		return false
-	if Master.game_data.current_pthru.total_prisms >= prism_unlock_amount():
+	if prism_current_amount() >= prism_unlock_amount():
 		if is_goal_level(world, level):
 			return false
 	return not has_ap_item(BASE_ID + (100 * world) + level) \
@@ -1118,6 +1203,25 @@ func refresh_gimmick_row() -> void :
 		if not is_instance_valid(sprite):
 			continue
 		sprite.modulate = Color.WHITE if has_ap_item(ITEM_ID_TO_KEYS.find_key(key)) else GIMMICK_LOCKED_TINT
+
+func build_prism_counter(hud: PthruHUD) -> void :
+	hud.tprism_text.position = Vector2(180, 144)
+	var prism: AnimatedSprite2D = hud.get_node("Prism")
+	prism.position = Vector2(165, 152)
+	if not prism_labels.has(hud.tprism_text):
+		prism_labels.append(hud.tprism_text)
+	refresh_prism_counter()
+
+func refresh_prism_counter() -> void :
+	if not ap_active():
+		return
+	var text: = str(prism_current_amount()) + " / %s" % prism_unlock_amount()
+	for i in range(prism_labels.size() - 1, -1, -1):
+		var label: = prism_labels[i]
+		if not is_instance_valid(label):
+			prism_labels.remove_at(i)
+			continue
+		label.text = text
 
 func build_amnesty_counter(hud: CanvasLayer) -> void :
 	var label: = hud.get_node_or_null(NodePath(AMNESTY_LABEL_NAME)) as Label
