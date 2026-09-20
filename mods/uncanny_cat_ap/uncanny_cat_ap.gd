@@ -1052,6 +1052,11 @@ func ap_level_locked(world: int, level: int) -> bool :
 	return not has_ap_item(BASE_ID + (100 * world) + level) \
 		and not has_ap_item(BASE_ID + WORLD_ITEM_OFFSET + (world - 1))
 
+func ap_level_disabled(world: int, level: int) -> bool :
+	if not ap_active() or is_goal_level(world, level):
+		return false
+	return not AP.inst.location_exists(BASE_ID + (100 * world) + level)
+
 func apply_ap_locks(sel: LevelSelect) -> void :
 	if not ap_active():
 		return
@@ -1067,15 +1072,11 @@ func apply_ap_locks(sel: LevelSelect) -> void :
 		var world: = parts[0].to_int()
 		var level: = parts[1].to_int() - 1
 
+		if ap_level_disabled(world, level):
+			butt.self_modulate = Color.RED
+
 		if is_goal_level(world, level):
 			butt.self_modulate = GOAL_TINT
-		
-		if world == 5 and AP.inst.conn.slot_data.get("world_5_levels", 0) == 0:
-			butt.self_modulate = Color.RED
-		if world == 6 and AP.inst.conn.slot_data.get("world_p_levels", 0) == 0:
-			butt.self_modulate = Color.RED
-		if world == 7 and AP.inst.conn.slot_data.get("world_e_levels", 0) == 0:
-			butt.self_modulate = Color.RED
 
 		butt.set_lock(ap_level_locked(world, level))
 
