@@ -635,7 +635,7 @@ func ap_level_locations(world: int, level_idx: int) -> Array:
 		["Peak", complete_id + PEAK_OFFSET],
 	]
 
-	if AP.inst.slot_data.get("coinsanity", 2) == 1:
+	if AP.inst.conn.slot_data.get("coinsanity", 2) == 2:
 		candidates.append(["All Coins", complete_id + ALL_COIN_OFFSET])
 
 	for colour in SMILEY_COLOURS.size():
@@ -795,7 +795,7 @@ func _on_any_node_added(node: Node):
 				if loc < 0:
 					print("AP: no coin location for %s/%s" % [lvl.ID, coin_path])
 					return
-				elif not AP.inst.location_checked(loc):
+				elif not AP.inst.location_checked(loc) and AP.inst.conn.slot_data.get("coinsanity", 0) == 1:
 					node.modulate = Color.GREEN
 
 				node.collected.connect(func():
@@ -1069,6 +1069,13 @@ func apply_ap_locks(sel: LevelSelect) -> void :
 
 		if is_goal_level(world, level):
 			butt.self_modulate = GOAL_TINT
+		
+		if world == 5 and AP.inst.conn.slot_data.get("world_5_levels", 0) == 0:
+			butt.self_modulate = Color.RED
+		if world == 6 and AP.inst.conn.slot_data.get("world_p_levels", 0) == 0:
+			butt.self_modulate = Color.RED
+		if world == 7 and AP.inst.conn.slot_data.get("world_e_levels", 0) == 0:
+			butt.self_modulate = Color.RED
 
 		butt.set_lock(ap_level_locked(world, level))
 
