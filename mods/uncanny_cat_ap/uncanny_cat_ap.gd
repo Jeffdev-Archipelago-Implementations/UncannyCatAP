@@ -188,6 +188,10 @@ var level_select: LevelSelect
 var last_world: = -1
 var last_level: = -1
 
+# For use with the full coin clear check
+var _coin_run_level: Level = null
+var _coin_run_collected: Dictionary[String, bool] = {}
+
 var is_deathlink: bool
 var _was_ap_playing: bool = false
 
@@ -284,6 +288,11 @@ func coin_location_id(level_id: String, coin_path: String) -> int :
 	if entry is Dictionary and entry.has("id"):
 		return int(entry["id"]) # JSON numbers parse as floats
 	return -1
+
+## Every coin path the level is known to hold, empty if it has no coins at all.
+func level_coin_paths(level_id: String) -> Dictionary:
+	var entry: Variant = coin_ids.get(level_id)
+	return entry if entry is Dictionary else {}
 
 func _config_option_value_changed(mod: ModLoader.Mod, id: String, value: Variant):
 	if mod.id != "jeffdev.uncannycatap":
@@ -583,6 +592,37 @@ func send_minigame_checks(game_offset: int, score_gap: int, score_value: int) ->
 			print("AP: threshold %d reached, sending %d" % [i * score_gap, loc])
 			AP.inst.collect_location(loc)
 
+func all_coins_location_id(world: int, level_idx: int) -> int :
+	return BASE_ID + ALL_COIN_OFFSET + (100 * world) + level_idx
+
+## Starts tracking coins upon starting a level.
+func begin_coin_run(lvl: Level) -> void :
+	_coin_run_level = lvl
+	_coin_run_collected.clear()
+
+## Records a coin pickup and sends the full clear check once the level is emptied.
+func mark_coin_collected(lvl: Level, coin_path: String) -> void :
+	if not ap_active() or not is_instance_valid(lvl):
+		return
+	if lvl != _coin_run_level:
+		begin_coin_run(lvl) # a level we never saw start, track it from here on
+	_coin_run_collected[coin_path] = true
+	_send_full_clear(lvl)
+
+func _send_full_clear(lvl: Level) -> void :
+	var paths: = level_coin_paths(lvl.ID)
+	if paths.is_empty():
+		return
+	var parsed: = parse_level_id(lvl.ID)
+	var loc: = all_coins_location_id(parsed[0], parsed[1])
+	if not AP.inst.location_exists(loc) or AP.inst.location_checked(loc):
+		return
+	for path in paths:
+		if not _coin_run_collected.has(path):
+			return
+	print("AP: all %d coins in %s collected, sending %d" % [paths.size(), lvl.ID, loc])
+	AP.inst.collect_location(loc)
+
 const SMILEY_COLOURS: Array[String] = ["Red", "Green", "Blue", "Yellow", "Orange"]
 
 func ap_level_locations(world: int, level_idx: int) -> Array:
@@ -594,6 +634,10 @@ func ap_level_locations(world: int, level_idx: int) -> Array:
 		["Good", complete_id + GOOD_OFFSET],
 		["Peak", complete_id + PEAK_OFFSET],
 	]
+
+	if AP.inst.slot_data.get("coinsanity", 2) == 1:
+		candidates.append(["All Coins", complete_id + ALL_COIN_OFFSET])
+
 	for colour in SMILEY_COLOURS.size():
 		candidates.append([
 			SMILEY_COLOURS[colour],
@@ -732,6 +776,7 @@ func _on_any_node_added(node: Node):
 		node.modulate = Color.RED
 
 	if node is Collectible:
+		# Stop/Go Markers
 		if node.does_speed:
 			if node.set_speed == 0.0:
 				if not has_gimmick(&"ap_stop"):
@@ -744,18 +789,22 @@ func _on_any_node_added(node: Node):
 		# Coins
 		if node.coin_multiply and not node.scene_file_path.ends_with("coaster_coin.tscn"):
 			node.ready.connect(func():
-				var coin_path: = str(node.level.get_path_to(node))
-				var loc: = coin_location_id(node.level.ID, coin_path)
+				var lvl: Level = node.level
+				var coin_path: = str(lvl.get_path_to(node))
+				var loc: = coin_location_id(lvl.ID, coin_path)
 				if loc < 0:
-					print("AP: no coin location for %s/%s" % [node.level.ID, coin_path])
+					print("AP: no coin location for %s/%s" % [lvl.ID, coin_path])
 					return
 				elif not AP.inst.location_checked(loc):
 					node.modulate = Color.GREEN
 
 				node.collected.connect(func():
-					if ap_active() and AP.inst.location_exists(loc) and not AP.inst.location_checked(loc):
-						print("AP: coin %s/%s collected, sending %d" % [node.level.ID, coin_path, loc])
+					if not ap_active():
+						return
+					if AP.inst.location_exists(loc) and not AP.inst.location_checked(loc):
+						print("AP: coin %s/%s collected, sending %d" % [lvl.ID, coin_path, loc])
 						AP.inst.collect_location(loc)
+					mark_coin_collected(lvl, coin_path)
 				, CONNECT_ONE_SHOT)
 			, CONNECT_ONE_SHOT)
 
@@ -836,6 +885,7 @@ func _PThru_on_child_added(node: Node):
 			return
 
 		var lvl := node as Level
+		begin_coin_run(lvl)
 		var parsed: = parse_level_id(lvl.ID)
 		var lvl_world: int = parsed[0]
 		var lvl_idx: int = parsed[1]
