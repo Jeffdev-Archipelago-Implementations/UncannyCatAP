@@ -18,8 +18,8 @@ var coin_ids: Dictionary = {}
 ## COOLER MODS CONFIG
 const CONFIG_PATH = "user://mod_data/configs/jeffdev.uncannycatap.json"
 const CONFIG_DEFAULTS = {
-	"deathlink": 0,
-	"deathlink_amnesty": 5,
+	"death_link": 0,
+	"death_link_amnesty": 5,
 	"chill_mode": 0,
 	"panic_mode": 0,
 	"show_ap_msgs": true,
@@ -48,6 +48,11 @@ const COSTUME_ITEM_OFFSET = 5000
 
 ## Cannium Prism, only in the pool with the macguffin goal
 const MACGUFFIN_ITEM_ID = BASE_ID + 6000
+
+# Uncany Cat Spray modifier infos
+const SPRAY_MOD_NAME = "uncanny_cat_spray"
+const SPRAY_QTY_KEY = &"mod_uncanny_cat_spray_qty"
+const SPRAY_ICON = preload("res://mods/uncanny_cat_ap/resources/uncanny_cat_spray.png")
 
 const GIMMICK_ITEM_IDS: Dictionary[String, int] = {
 	"Breakable Tiles": BASE_ID + 2000,
@@ -92,6 +97,7 @@ const ITEM_ID_TO_KEYS: Dictionary[int, String] = {
 	BASE_ID + MODIFIER_ITEM_OFFSET + 5: "mod_dizzy",
 	BASE_ID + MODIFIER_ITEM_OFFSET + 6: "mod_missiles",
 	BASE_ID + MODIFIER_ITEM_OFFSET + 7: "mod_sticky",
+	BASE_ID + VILLA_ITEM_OFFSET:	 	"mod_uncanny_cat_spray", # This is a modded modifier, kinda in its own category
 
 	# VILLA STUFF
 	BASE_ID + VILLA_ITEM_OFFSET + 1: "extra_catartist",
@@ -159,6 +165,8 @@ const AMNESTY_LABEL_NAME = &"APDeathlinkAmnesty"
 const AMNESTY_LABEL_RECT = Rect2(132, 163, 127, 20)
 const AMNESTY_LABEL_COLOR = Color(1, 0.35, 0.458334)
 var amnesty_labels: Array[Label] = []
+var _spray_icon: TextureRect
+var _vanilla_prism_unlocks: Dictionary[StringName, int] = {}
 var prism_labels: Array[Label] = []
 
 ## The 'goal_level' slot option, as [world, 1-based level] per choice.
@@ -240,6 +248,10 @@ func _enter_tree() -> void :
 		var mod_icons: = master.get_node_or_null("HUDMods/ModIcons")
 		if mod_icons:
 			mod_icons.child_entered_tree.connect(_on_mod_icon_added)
+			# update_mods() clears the row and only re-adds vanilla modifiers
+			mod_icons.child_exiting_tree.connect(func(_c: Node):
+				refresh_spray_icon.call_deferred()
+			)
 
 func _ready() -> void :
 	print("AP: post-initialization")
@@ -300,21 +312,21 @@ func _config_option_value_changed(mod: ModLoader.Mod, id: String, value: Variant
 	config[id] = value
 	print("AP: config '%s' is now %s" % [id, value])
 	match id:
-		"deathlink":
+		"death_link":
 			if ap_active():
-				AP.inst.set_deathlink(config_toggle("deathlink", "deathlink"))
+				AP.inst.set_deathlink(config_toggle("death_link", "death_link"))
 			refresh_amnesty_counter()
-		"deathlink_amnesty":
+		"death_link_amnesty":
 			refresh_amnesty_counter()
 		"chill_mode", "panic_mode":
 			sync_ap_mods()
 
 func config_toggle(id: String, slot_key: String) -> bool :
+	if not ap_active():
+		return false
 	match int(config.get(id, 0)):
 		1: return true
 		2: return false
-	if not ap_active():
-		return false
 	return bool(int(AP.inst.conn.slot_data.get(slot_key, 0)))
 
 func chill_mode() -> bool :
@@ -329,8 +341,8 @@ const DEBUG_PRISM_UNLOCK_AMOUNT: int = -1
 func prism_current_amount() -> int:
 	if not ap_active():
 		return Master.game_data.current_pthru.total_prisms
-	if AP.inst.conn.slot_data.get("macguffin_goal", 0) == 0:
-		return Master.game_data.current_pthru.total_prisms
+	#if AP.inst.conn.slot_data.get("macguffin_goal", 0) == 0:
+		#return Master.game_data.current_pthru.total_prisms
 	return ap_item_count(MACGUFFIN_ITEM_ID)
 
 func prism_unlock_amount() -> int :
@@ -369,8 +381,9 @@ func _on_ap_connected(conn: ConnectionInfo, _json: Dictionary) -> void :
 	refresh_gimmick_row()
 
 	APConnectionMemory.store(conn.seed_name)
+	suppress_prism_unlocks()
 	load_ap_state()
-	AP.inst.set_deathlink(config_toggle("deathlink", "deathlink"))
+	AP.inst.set_deathlink(config_toggle("death_link", "death_link"))
 	conn.deathlink.connect(_on_deathlink_received)
 	refresh_amnesty_counter()
 
@@ -476,6 +489,8 @@ func apply_ap_modes(pthru: PthruData) -> void :
 		pthru.modifiers = Modifiers.new()
 	pthru.modifiers.mods["easy_mode"] = chill_mode()
 	pthru.modifiers.mods["hard_mode"] = panic_mode()
+	# Not a vanilla modifier, so it has to be added to the list by hand
+	pthru.modifiers.mods[SPRAY_MOD_NAME] = spray_count() > 0
 
 # MODIFIERS, not mods, to be clear
 func sync_ap_mods() -> void :
@@ -500,6 +515,7 @@ func sync_ap_mods() -> void :
 	# Update the icons
 	if Master.current:
 		Master.current.update_mods(pthru.modifiers)
+		refresh_spray_icon()
 
 var _opening_presents: = false
 var _receiving_items: = false
@@ -529,10 +545,12 @@ func receive_ap_items() -> void :
 
 		if ITEM_ID_TO_KEYS.has(item.id):
 			var item_key: String = ITEM_ID_TO_KEYS[item.id]
-			if item.id >= BASE_ID + MODIFIER_ITEM_OFFSET and item.id < BASE_ID + MODIFIER_ITEM_OFFSET + 1000:
+			# By key, not by id range, the spray modifier lives outside that range
+			if item_key.begins_with("mod_"):
 				var qty_key: = StringName(item_key + "_qty")
 				Master.save_data.ap_mod_qty[qty_key] = Master.save_data.ap_mod_qty.get(qty_key, 0) + 1
 			else:
+				restore_unlock_key(StringName(item_key)) # in case it is held back
 				Master.current.award_unlock(item_key)
 
 	Master.save_data.write_save()
@@ -743,6 +761,15 @@ func _on_any_node_added(node: Node):
 		)
 
 
+	# Both of these award a costume that belongs to the item pool
+	if node is RobertCutscene:
+		hold_back_unlock(node, &"costume_nothing")
+	if node is EditorEndScreen:
+		hold_back_unlock(node, &"costume_builder")
+
+	if node is Ghost:
+		node.ready.connect(_hook_ghost.bind(node), CONNECT_ONE_SHOT)
+
 	if node is Block and node.dblock_score and not has_gimmick(&"ap_tiles"):
 		_lock_block(node)
 		node.ready.connect(func():
@@ -877,6 +904,7 @@ func _PThru_start(node: PThru):
 	if not ap_active():
 		return
 	node.world_peak_unlocks.clear()
+	suppress_prism_unlocks()
 	node.child_entered_tree.connect(_PThru_on_child_added)
 
 func _PThru_on_child_added(node: Node):
@@ -960,6 +988,8 @@ func _PThru_on_child_added(node: Node):
 							AP.inst.collect_location(complete_loc_id)
 						
 					for mod in Master.save_data.ap_mod_qty:
+						if mod == SPRAY_QTY_KEY:
+							continue # only spent on a save, never on a clear
 						if Master.save_data.ap_mod_qty[mod] > 0:
 							Master.save_data.ap_mod_qty[mod] -= 1
 					sync_ap_mods()
@@ -995,6 +1025,7 @@ func _TitleScreen_start(node: Menu):
 	if ap_active():
 		AP.inst.ap_disconnect()
 
+	restore_prism_unlocks()
 	_use_vanilla_save_paths()
 
 func _LevelSelect_start(node: LevelSelect):
@@ -1019,6 +1050,37 @@ func _kick_to_level_select(world: int, level: int) -> void :
 
 
 #region WORLD LOCKS
+
+func suppress_prism_unlocks() -> void :
+	if not is_instance_valid(Master.current):
+		return
+	if Master.current.prism_count_unlocks.is_empty():
+		return
+	_vanilla_prism_unlocks = Master.current.prism_count_unlocks.duplicate()
+	Master.current.prism_count_unlocks = {}
+	print("AP: vanilla prism milestone costumes disabled")
+
+# This is for play without AP functionality
+func restore_prism_unlocks() -> void :
+	if _vanilla_prism_unlocks.is_empty() or not is_instance_valid(Master.current):
+		return
+	Master.current.prism_count_unlocks = _vanilla_prism_unlocks.duplicate()
+	_vanilla_prism_unlocks = {}
+	print("AP: vanilla prism milestone costumes restored")
+
+func hold_back_unlock(node: Node, key: StringName) -> void :
+	if not ap_active() or not Master.save_data:
+		return
+	if Master.save_data.unlocks.get(key, true):
+		return
+	Master.save_data.unlocks.erase(key)
+	print("AP: holding back the vanilla '%s' unlock" % key)
+	node.tree_exited.connect(restore_unlock_key.bind(key), CONNECT_ONE_SHOT)
+
+func restore_unlock_key(key: StringName) -> void :
+	if not Master.save_data or Master.save_data.unlocks.has(key):
+		return
+	Master.save_data.unlocks[key] = false
 
 func has_gimmick(key: StringName) -> bool :
 	if not ap_active():
@@ -1318,10 +1380,75 @@ func refresh_amnesty_counter() -> void :
 #endregion HUD
 
 
+#region UNCANNY CAT SPRAY
+
+func spray_count() -> int :
+	if not is_instance_valid(Master.save_data):
+		return 0
+	if not ap_active():
+		return 0
+	if AP.inst.conn.slot_data.get("buff_uncanny_cat_spray", 0) == 0:
+		return 0
+	return int(Master.save_data.ap_mod_qty.get(SPRAY_QTY_KEY, 0))
+
+func _hook_ghost(ghost: Ghost) -> void :
+	if not ap_active() or not is_instance_valid(ghost):
+		return
+	var lvl: Level = ghost.level
+	if not is_instance_valid(lvl):
+		return
+	if ghost.caught.is_connected(lvl.death):
+		ghost.caught.disconnect(lvl.death)
+	ghost.caught.connect(func(type: Level.DEATH_TYPES, cause: Node2D):
+		if not spend_spray(lvl):
+			lvl.death(type, cause)
+			return
+		if ghost.parry_stun <= 0:
+			ghost.stored_velocity = ghost.velocity
+		ghost.parry_stun = Player.PARRY_TIME
+		ghost.velocity = Vector2.ZERO
+	)
+
+func spend_spray(lvl: Level) -> bool :
+	if not ap_active() or lvl.test_mode or lvl.mode == Level.MODES.DEMO:
+		return false
+	var left: = spray_count()
+	if left <= 0:
+		return false
+	Master.save_data.ap_mod_qty[SPRAY_QTY_KEY] = left - 1
+	Master.save_data.write_save()
+	print("AP: uncanny cat spray used, %d left" % (left - 1))
+	sync_ap_mods()
+	return true
+
+## update_mods() only draws the vanilla modifier icons, so ours is kept here.
+func refresh_spray_icon() -> void :
+	if is_instance_valid(_spray_icon) and _spray_icon.is_queued_for_deletion():
+		_spray_icon = null # the row was wiped, it just has not left the tree yet
+	if not ap_active() or spray_count() <= 0:
+		if is_instance_valid(_spray_icon):
+			_spray_icon.queue_free()
+		_spray_icon = null
+		return
+	if is_instance_valid(_spray_icon) or not is_instance_valid(Master.current):
+		return
+	var row: = Master.current.get_node_or_null(^"HUDMods/ModIcons") as Container
+	if not row:
+		return
+	var icon: = TextureRect.new()
+	icon.name = &"APUncannyCatSpray"
+	icon.texture = SPRAY_ICON
+	icon.pivot_offset = SPRAY_ICON.get_size() * 0.5
+	_spray_icon = icon
+	row.add_child(icon) # _on_mod_icon_added() stamps the count on it
+
+#endregion UNCANNY CAT SPRAY
+
+
 #region DEATHLINK
 
 func deathlink_amnesty() -> int :
-	return maxi(1, int(config["deathlink_amnesty"]))
+	return maxi(1, int(config.get("death_link_amnesty", 5)))
 
 func handle_deathlink_amnesty() -> bool :
 	if not Master.save_data:

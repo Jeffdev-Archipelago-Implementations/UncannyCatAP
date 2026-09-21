@@ -1,6 +1,6 @@
 {
-	"deathlink": {
-		"default": 0,
+	"death_link": {
+		"default": 0.0,
 		"name": "DeathLink",
 		"description": "Enables DeathLink. When jumpscared, send a death to your friends. When receiving a death, you get jumpscared.",
 		"type_hint": {
@@ -12,19 +12,19 @@
 			]
 		}
 	},
-	"deathlink_amnesty": {
+	"death_link_amnesty": {
 		"name": "DeathLink Amnesty",
 		"description": "Sets how many deaths count as a death for DeathLink purposes.",
-		"default": 5,
+		"default": 5.0,
 		"type_hint": {
 			"id": "spin_box",
-			"min": 1,
-			"max": 10,
-			"step": 1
+			"min": 1.0,
+			"max": 50.0,
+			"step": 1.0
 		}
 	},
 	"chill_mode": {
-		"default": 0,
+		"default": 0.0,
 		"name": "Chill Mode",
 		"description": "Enables Chill Mode, which prevents the Uncanny Cat from spawning. A much chiller, easier experience.",
 		"type_hint": {
@@ -37,7 +37,7 @@
 		}
 	},
 	"panic_mode": {
-		"default": 0,
+		"default": 0.0,
 		"name": "Panic Mode",
 		"description": "Enables Panic Mode, which significantly speeds up the Uncanny Cat. This can be extremely difficult!",
 		"type_hint": {
@@ -57,6 +57,6 @@
 	"ap_msg_queue_time": {
 		"name": "Message Display Time",
 		"description": "Adjust how long you want Archipelago messages at the top to display for, in seconds.",
-		"default": 3
+		"default": 3.0
 	}
 }

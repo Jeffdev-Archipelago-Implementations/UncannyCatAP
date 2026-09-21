@@ -120,6 +120,7 @@ var ap_mod_qty: Dictionary[StringName, int] = {
 	&"mod_dizzy_qty": 0, 
 	&"mod_missiles_qty": 0, 
 	&"mod_sticky_qty": 0,
+	&"mod_uncanny_cat_spray_qty": 0,
 }
 
 var endless_last_used_name: String = ""
