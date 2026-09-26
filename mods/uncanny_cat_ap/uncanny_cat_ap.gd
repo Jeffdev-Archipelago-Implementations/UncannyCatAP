@@ -341,8 +341,8 @@ const DEBUG_PRISM_UNLOCK_AMOUNT: int = -1
 func prism_current_amount() -> int:
 	if not ap_active():
 		return Master.game_data.current_pthru.total_prisms
-	#if AP.inst.conn.slot_data.get("macguffin_goal", 0) == 0:
-		#return Master.game_data.current_pthru.total_prisms
+	if AP.inst.conn.slot_data.get("macguffin_goal", 0) == 0:
+		return Master.game_data.current_pthru.total_prisms
 	return ap_item_count(MACGUFFIN_ITEM_ID)
 
 func prism_unlock_amount() -> int :
