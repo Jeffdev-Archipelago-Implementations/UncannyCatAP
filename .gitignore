@@ -91,3 +91,4 @@ ucg_tv_test/**
 !assetsNEW/scenes/tiles/horse_tiles.tres
 !assetsNEW/scenes/utils/pthru_data.gd
 !assetsNEW/scenes/utils/save_data.gd
+.vscode/settings.json
