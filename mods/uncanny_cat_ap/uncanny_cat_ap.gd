@@ -54,6 +54,12 @@ const SPRAY_MOD_NAME = "uncanny_cat_spray"
 const SPRAY_QTY_KEY = &"mod_uncanny_cat_spray_qty"
 const SPRAY_ICON = preload("res://mods/uncanny_cat_ap/resources/uncanny_cat_spray.png")
 
+# Final screen stuff
+const FINAL_RESULTS_TEXT := "Your journey has come to an end.\nThe Uncanny Cat Golf multiworld is saved!\nI hope you enjoyed!\n-Jeffdev"
+const AP_LOGO = preload("res://mods/uncanny_cat_ap/resources/ap_logo.png")
+# [done, total]
+var _goal_checks: Vector2i = Vector2i.ZERO
+
 const GIMMICK_ITEM_IDS: Dictionary[String, int] = {
 	"Breakable Tiles": BASE_ID + 2000,
 	"Keys": BASE_ID + 2001,
@@ -599,6 +605,26 @@ func goal_level() -> Vector2i :
 func is_goal_level(world: int, level: int) -> bool :
 	return goal_level() == Vector2i(world, level + 1)
 
+const GOAL_RANKS: Array[int] = [Level.Ranks.UNCANNY, Level.Ranks.OK, Level.Ranks.SWAG, Level.Ranks.PEAK]
+const GOAL_RANK_NAMES: Dictionary[int, String] = {
+	Level.Ranks.UNCANNY: "Any",
+	Level.Ranks.OK: "OK",
+	Level.Ranks.SWAG: "GOOD",
+	Level.Ranks.PEAK: "PEAK",
+}
+
+func goal_rank_required() -> int :
+	if not ap_active():
+		return Level.Ranks.UNCANNY
+	var idx: int = int(AP.inst.conn.slot_data.get("goal_rank_requirement", 0))
+	if idx < 0 or idx >= GOAL_RANKS.size():
+		return Level.Ranks.UNCANNY
+	return GOAL_RANKS[idx]
+
+func goal_rank_met(lvl: Level) -> bool :
+	var rank: int = Level.Ranks.PEAK if lvl.hideScoring else lvl.HUD.rank_calc
+	return rank >= goal_rank_required()
+
 func send_minigame_checks(game_offset: int, score_gap: int, score_value: int) -> void :
 	if not ap_active():
 		return
@@ -650,8 +676,10 @@ func ap_level_locations(world: int, level_idx: int) -> Array:
 	var candidates: = [
 		["Complete", complete_id],
 		["Good", complete_id + GOOD_OFFSET],
-		["Peak", complete_id + PEAK_OFFSET],
 	]
+
+	if AP.inst.conn.slot_data.get("peak_checks", 1) == 1:
+		candidates.append(["Peak", complete_id + PEAK_OFFSET])
 
 	if AP.inst.conn.slot_data.get("coinsanity", 2) == 2:
 		candidates.append(["All Coins", complete_id + ALL_COIN_OFFSET])
@@ -730,6 +758,9 @@ func _on_child_added(node: Node):
 					node._look_at_world(last_world)
 		)
 		_LevelSelect_start(node)
+	if node is FinalResults and ap_active():
+		node.ready.connect(_show_ap_final_results.bind(node))
+
 
 func _on_any_node_added(node: Node):
 	if not ap_active():
@@ -954,9 +985,14 @@ func _PThru_on_child_added(node: Node):
 				if trans_mode != PThru.LEVEL_TRANSITION.NORMAL and not peak_hunter_click:
 					pthru.level_switch(trans_mode)
 					return
+				if not goal_rank_met(lvl):
+					queue_banner("%s rank or better is required to goal!" % GOAL_RANK_NAMES[goal_rank_required()])
+					pthru.level_switch(PThru.LEVEL_TRANSITION.WIN_RESET)
+					return
 				pthru.write_level_data(lvl_world, lvl_idx, lvl.hideScoring)
 				pthru.master.thinker.visible = true
 				lvl.queue_free()
+				_goal_checks = ap_check_counts()
 				pthru.overlay.emit(Master.GameScenes.FINAL_RESULTS)
 				pthru.play_music.emit(Master.Music.NONE, 1.0)
 			)
@@ -968,8 +1004,9 @@ func _PThru_on_child_added(node: Node):
 			if lvl.mode == lvl.MODES.NORMAL and ap_active():
 				if trans_mode in [PThru.LEVEL_TRANSITION.NORMAL, PThru.LEVEL_TRANSITION.WIN_RESET, PThru.LEVEL_TRANSITION.GOLDEN_TEE]:
 					# Check for goal
-					if prism_current_amount() >= prism_unlock_amount() and is_goal_level(lvl_world, lvl_idx):
-						AP.inst.set_client_status(AP.inst.ClientStatus.CLIENT_GOAL)
+					if is_goal_level(lvl_world, lvl_idx):
+						if prism_current_amount() >= prism_unlock_amount() and goal_rank_met(lvl):
+							AP.inst.set_client_status(AP.inst.ClientStatus.CLIENT_GOAL)
 					else:
 						# Check for peak
 						var complete_loc_id: int = BASE_ID + (100 * lvl_world) + lvl_idx
@@ -1173,6 +1210,25 @@ func _show_ap_completion(sel: PthruSelect) -> void :
 			continue
 		b.self_modulate = Color.WHITE
 		b.peak_sparkles.visible = false
+
+func ap_check_counts() -> Vector2i :
+	var locs: Dictionary = AP.inst.conn.slot_locations
+	var done: = 0
+	for id in locs:
+		if locs[id]:
+			done += 1
+	return Vector2i(done, locs.size())
+
+func _show_ap_final_results(results: FinalResults) -> void :
+	results.prism_label.text = "%d / %d" % [_goal_checks.x, _goal_checks.y]
+	(results.get_node("FinalCount/ThanksText") as Label).text = FINAL_RESULTS_TEXT
+
+	var prism: AnimatedSprite2D = results.get_node("FinalCount/Prism")
+	var prism_size: = prism.sprite_frames.get_frame_texture(&"default", 0).get_size() * prism.scale
+	var frames: = SpriteFrames.new()
+	frames.add_frame(&"default", AP_LOGO)
+	prism.sprite_frames = frames
+	prism.scale = prism_size / AP_LOGO.get_size() * 0.65
 
 func _lock_pthru_file_actions(sel: PthruSelect) -> void :
 	var new_btn: Node2D = sel.get_node("NewButton")
